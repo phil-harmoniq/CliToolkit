@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using CliToolkit;
 using CliToolkit.Arguments;
+using CliToolkit.Arguments.Styles;
 using CliToolkit.Exceptions;
 
 namespace CliToolkit.AppTest
@@ -14,11 +15,11 @@ namespace CliToolkit.AppTest
         {
             var app = new AppBuilder<Program>()
                 .SetName("File List")
-                .Start(args);
+                .Start(new string[] { "/verbose", "/hidden"});
         }
 
-        public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h');
-        public Flag VerboseFlag = new Flag("Show header and footer information", "verbose", 'v');
+        public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h', FlagStyle.MsBuild);
+        public Flag VerboseFlag = new Flag("Show header and footer information", "verbose", 'v', FlagStyle.MsBuild);
 
         public override void OnExecute(string[] args)
         {

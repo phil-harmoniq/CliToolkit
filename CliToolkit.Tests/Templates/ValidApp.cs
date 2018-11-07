@@ -6,15 +6,38 @@ namespace CliToolkit.Tests.Templates
 {
     public class ValidApp : CliApp
     {
-        public Flag DoubleDashFlag { get; } = new Flag("Double-dash flag style", "doubleDashFlag", 'd', FlagStyle.DoubleDash);
-        public Flag SingleDashFlag { get; } = new Flag("Single-dash flag style", "singleDashFlag", 's', FlagStyle.SingleDash);
-        public Flag MsBuildDashFlag { get; } = new Flag("MsBuild flag style", "msbuildFlag", 'm', FlagStyle.MsBuild);
+        public static readonly string DoubleDashFlagKeyword = "DoubleDashFlag";
+        public static readonly char DoubleDashFlagShortKeyword = 'd';
+        public Flag DoubleDashFlag { get; } = new Flag("Double-dash flag style", DoubleDashFlagKeyword, DoubleDashFlagShortKeyword, FlagStyle.DoubleDash);
+        
+        public static readonly string SingleDashFlagKeyword = "SingleDashFlag";
+        public static readonly char SingleDashFlagShortKeyword = 's';
+        public Flag SingleDashFlag { get; } = new Flag("Single-dash flag style", SingleDashFlagKeyword, SingleDashFlagShortKeyword, FlagStyle.SingleDash);
+        
+        public static readonly string MsBuildFlagKeyword = "MsBuildDashFlag";
+        public static readonly char MsBuildFlagShortKeyword = 'm';
+        public Flag MsBuildDashFlag { get; } = new Flag("MsBuild flag style", MsBuildFlagKeyword, MsBuildFlagShortKeyword, FlagStyle.MsBuild);
 
-        public Property DoubleDashProperty { get; } = new Property("Double-dash property style", "doubleDashProperty", 'D', PropertyStyle.DoubleDash);
-        public Property DoubleDashWithEqualProperty { get; } = new Property("Double-dash property style", "doubleDashWithEqualProperty", 'E', PropertyStyle.DoubleDashWithEqual);
-        public Property SingleDashProperty { get; } = new Property("Single-dash property style", "singleDashProperty", 'S', PropertyStyle.SingleDash);
-        public Property SingleDashWithEqualProperty { get; } = new Property("Single-dash property style", "singleDashWithEqualProperty", 'W', PropertyStyle.SingleDashWithEqual);
-        public Property MsBuildProperty { get; } = new Property("MsBuild property style", "msbuildProperty", 'M', PropertyStyle.MsBuild);
+        
+        public static readonly string DoubleDashPropertyKeyword = "DoubleDashProperty";
+        public static readonly char DoubleDashPropertyShortKeyword = 'D';
+        public Property DoubleDashProperty = new Property("Double-dash property style", DoubleDashPropertyKeyword, DoubleDashPropertyShortKeyword, PropertyStyle.DoubleDash);
+        
+        public static readonly string DoubleDashWithEqualPropertyKeyword = "DoubleDashWithEqualProperty";
+        public static readonly char DoubleDashWithEqualPropertyShortKeyword = 'E';
+        public Property DoubleDashWithEqualProperty = new Property("Double-dash property style", DoubleDashWithEqualPropertyKeyword, DoubleDashWithEqualPropertyShortKeyword, PropertyStyle.DoubleDashWithEqual);
+        
+        public static readonly string SingleDashPropertyKeyword = "SingleDashProperty";
+        public static readonly char SingleDashPropertyShortKeyword = 'S';
+        public Property SingleDashProperty = new Property("Single-dash property style", SingleDashPropertyKeyword, SingleDashPropertyShortKeyword, PropertyStyle.SingleDash);
+        
+        public static readonly string SingleDashWithEqualPropertyKeyword = "SingleDashWithEqualProperty";
+        public static readonly char SingleDashWithEqualPropertyShortKeyword = 'W';
+        public Property SingleDashWithEqualProperty = new Property("Single-dash property style", SingleDashWithEqualPropertyKeyword, SingleDashWithEqualPropertyShortKeyword, PropertyStyle.SingleDashWithEqual);
+        
+        public static readonly string MsBuildPropertyKeyword = "MsBuildProperty";
+        public static readonly char MsBuildPropertyShortKeyword = 'M';
+        public Property MsBuildProperty = new Property("MsBuild property style", MsBuildPropertyKeyword, MsBuildPropertyShortKeyword, PropertyStyle.MsBuild);
 
         public override void OnExecute(string[] args)
         {
