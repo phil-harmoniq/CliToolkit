@@ -1,0 +1,1 @@
+dotnet CliToolkit.AppTest\bin\Debug\netcoreapp2.1\CliToolkit.AppTest.dll $args

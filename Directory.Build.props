@@ -1,0 +1,21 @@
+<Project>
+ 
+  <PropertyGroup>
+    <Authors>Phil Hawkins</Authors>
+    <VersionPrefix>0.0.1</VersionPrefix>
+    <Copyright>MIT</Copyright>
+    <Description></Description>
+    <PackageProjectUrl>https://phil-harmoniq.github.io/projects/CliToolkit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/phil-harmoniq/CliToolkit/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageTags></PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CiBuildNumber></CiBuildNumber>
+    <VersionSuffix Condition=" '$(CiBuildNumber)' != '' And '$(VersionSuffix)' != '' ">$(VersionSuffix)-ci$(CiBuildNumber)</VersionSuffix>
+  </PropertyGroup>
+
+</Project>
