@@ -106,7 +106,7 @@ namespace CliToolkit.Utilities
                 .GroupBy(property => property.Keyword)
                 .Where(group => group.Key != "");
 
-            var uniqueCommandLongKeywords = properties
+            var uniqueCommandLongKeywords = commands
                 .GroupBy(command => command.Keyword)
                 .Where(group => group.Key != "");
 
