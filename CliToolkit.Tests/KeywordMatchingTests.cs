@@ -68,6 +68,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.DoubleDashPropertyShortKeyword}", ValueString });
             Assert.True(app.DoubleDashProperty.IsActive);
+            Assert.Equal(app.DoubleDashProperty.Value, ValueString);
         }
 
         [Fact]
@@ -75,6 +76,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"--{ValidApp.DoubleDashWithEqualPropertyKeyword}={ValueString}" });
             Assert.True(app.DoubleDashWithEqualProperty.IsActive);
+            Assert.Equal(app.DoubleDashWithEqualProperty.Value, ValueString);
         }
 
         [Fact]
@@ -82,6 +84,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.DoubleDashWithEqualPropertyShortKeyword}={ValueString}" });
             Assert.True(app.DoubleDashWithEqualProperty.IsActive);
+            Assert.Equal(app.DoubleDashWithEqualProperty.Value, ValueString);
         }
         
         [Fact]
@@ -89,6 +92,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashPropertyKeyword}", ValueString });
             Assert.True(app.SingleDashProperty.IsActive);
+            Assert.Equal(app.SingleDashProperty.Value, ValueString);
         }
         
         [Fact]
@@ -96,6 +100,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashPropertyShortKeyword}", ValueString });
             Assert.True(app.SingleDashProperty.IsActive);
+            Assert.Equal(app.SingleDashProperty.Value, ValueString);
         }
 
         [Fact]
@@ -103,6 +108,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashWithEqualPropertyKeyword}={ValueString}" });
             Assert.True(app.SingleDashWithEqualProperty.IsActive);
+            Assert.Equal(app.SingleDashWithEqualProperty.Value, ValueString);
         }
 
         [Fact]
@@ -110,6 +116,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashWithEqualPropertyShortKeyword}={ValueString}" });
             Assert.True(app.SingleDashWithEqualProperty.IsActive);
+            Assert.Equal(app.SingleDashWithEqualProperty.Value, ValueString);
         }
         
         [Fact]
@@ -117,6 +124,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildPropertyKeyword}={ValueString}" });
             Assert.True(app.MsBuildProperty.IsActive);
+            Assert.Equal(app.MsBuildProperty.Value, ValueString);
         }
         
         [Fact]
@@ -124,6 +132,7 @@ namespace CliToolkit.Tests
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildPropertyShortKeyword}={ValueString}" });
             Assert.True(app.MsBuildProperty.IsActive);
+            Assert.Equal(app.MsBuildProperty.Value, ValueString);
         }
         
         #endregion
