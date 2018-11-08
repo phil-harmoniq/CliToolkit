@@ -8,6 +8,11 @@ namespace CliToolkit.Arguments
     public sealed class Flag : Argument
     {
         private readonly FlagStyle _style;
+
+        /// <summary>
+        /// A single letter that will also trigger this flag. This value is optional.
+        /// </summary>
+        public string ShortKeyword { get; private set; }
         
         /// <summary>
         /// Creates a new strongly-typed Flag argument.
@@ -17,8 +22,9 @@ namespace CliToolkit.Arguments
         /// <param name="shortKeyword">An optional single character that will also trigger this Flag argument.</param>
         /// <param name="style">Sets the particular argument style to be used to parse this Flag argument.</param>
         public Flag(string description, string keyword, char? shortKeyword = null, FlagStyle style = null)
-            : base(description, keyword, shortKeyword)
+            : base(description, keyword)
         {
+            if (shortKeyword != null) { ShortKeyword = shortKeyword.ToString(); }
             if (style == null) { style = FlagStyle.DoubleDash; }
             _style = style;
         }

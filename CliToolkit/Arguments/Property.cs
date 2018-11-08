@@ -12,6 +12,11 @@ namespace CliToolkit.Arguments
         private readonly PropertyStyle _style;
 
         /// <summary>
+        /// A single letter that will also trigger this property. This value is optional.
+        /// </summary>
+        public string ShortKeyword { get; private set; }
+
+        /// <summary>
         /// The property value captured by this argument if triggered.
         /// </summary>
         public string Value { get; private set; }
@@ -24,8 +29,9 @@ namespace CliToolkit.Arguments
         /// <param name="shortKeyword">An optional single character that will also trigger this Property argument.</param>
         /// <param name="style">Sets the particular argument style to be used to parse this Property argument.</param>
         public Property(string description, string keyword, char? shortKeyword = null, PropertyStyle style = null)
-            : base(description, keyword, shortKeyword)
+            : base(description, keyword)
         {
+            if (shortKeyword != null) { ShortKeyword = shortKeyword.ToString(); }
             if (style == null) { style = PropertyStyle.DoubleDash; }
             _style = style;
         }

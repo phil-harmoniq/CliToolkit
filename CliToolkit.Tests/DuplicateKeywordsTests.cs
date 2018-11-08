@@ -7,7 +7,8 @@ namespace CliToolkit.Tests
 {
     public class DuplicateKeywordsTests
     {
-        // Flags
+        #region Flags
+
         [Fact]
         public void DuplicateDoubleDashFlagKeyword()
         {
@@ -49,9 +50,11 @@ namespace CliToolkit.Tests
             var app = new DuplicateMsBuildFlagShortKeywordApp();
             Assert.Throws<AppConfigurationException>(() => app.Start(new string[0]));
         }
-        
 
-        // Properties
+        #endregion
+        
+        #region Properties
+
         [Fact]
         public void DuplicateDoubleDashPropertyKeyword()
         {
@@ -121,5 +124,18 @@ namespace CliToolkit.Tests
             var app = new DuplicateMsBuildPropertyShortKeywordApp();
             Assert.Throws<AppConfigurationException>(() => app.Start(new string[0]));
         }
+
+        #endregion
+
+        #region Commands
+
+        [Fact]
+        public void DuplicateSubCommandKeyword()
+        {
+            var app = new DuplicateSubCommandKeywordApp();
+            Assert.Throws<AppConfigurationException>(() => app.Start(new string[0]));
+        }
+
+        #endregion
     }
 }

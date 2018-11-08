@@ -34,7 +34,7 @@ namespace CliToolkit.Utilities
 
             CheckForDuplicateKeywords(flags, properties, commands);
 
-            var allDeclaredArgs = flags.Concat<Argument>(properties);
+            var allDeclaredArgs = flags.Concat<Argument>(properties).Concat<Argument>(commands);
             var onExecuteArgs = new List<string>();
 
             Command commandTarget = null;

@@ -4,10 +4,16 @@ namespace CliToolkit.Arguments
 {
     public abstract class Command : Argument, ICommand
     {
-        internal Command(string description, string keyword, char? shortKeyword = null) : base(description, keyword, shortKeyword)
+        protected Command(string description, string keyword) : base(description, keyword)
         {
         }
 
         public abstract void OnExecute(string[] args);
+
+        internal override int IsMatchingKeyword(string[] args)
+        {
+            if (args[0].Equals(Keyword)) { return 1; }
+            return 0;
+        }
     }
 }
