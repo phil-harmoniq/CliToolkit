@@ -15,7 +15,7 @@ namespace CliToolkit.AppTest
         {
             var app = new AppBuilder<Program>()
                 .SetName("File List")
-                .Start(new string[] { "/verbose", "/hidden"});
+                .Start(args);
         }
 
         public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h', FlagStyle.MsBuild);
