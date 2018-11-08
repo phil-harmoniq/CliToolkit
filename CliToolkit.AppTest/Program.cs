@@ -18,8 +18,8 @@ namespace CliToolkit.AppTest
                 .Start(args);
         }
 
-        public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h', FlagStyle.MsBuild);
-        public Flag VerboseFlag = new Flag("Show header and footer information", "verbose", 'v', FlagStyle.MsBuild);
+        public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h');
+        public Flag VerboseFlag = new Flag("Show header and footer information", "verbose", 'v');
 
         public override void OnExecute(string[] args)
         {

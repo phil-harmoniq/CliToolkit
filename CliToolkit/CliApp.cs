@@ -5,13 +5,14 @@ using System.Reflection;
 using CliToolkit.Arguments;
 using CliToolkit.Exceptions;
 using CliToolkit.Meta;
+using CliToolkit.Utilities;
 
 namespace CliToolkit
 {
     /// <summary>
     /// Inherit this class to build a new CLI application.
     /// </summary>
-    public abstract class CliApp
+    public abstract class CliApp : ICommand
     {
         private bool _headerWasShown = false;
         private int _width = 64;
@@ -84,7 +85,7 @@ namespace CliToolkit
         {
             try
             {
-                ParseArgs(args);
+                ArgParser.ParseArgs(this, args);
             }
             catch (AppRuntimeException exception)
             {
@@ -111,119 +112,6 @@ namespace CliToolkit
             if (!string.IsNullOrEmpty(_footerText))
             {
                 Console.WriteLine(_footerText);
-            }
-        }
-
-        private void ParseArgs(string[] args)
-        {
-            var classFields = this.GetType().GetFields();
-            var classProperties = this.GetType().GetProperties();
-
-            var flags = classFields
-                .Where(i => i.FieldType == typeof(Flag))
-                .Select(i => (Flag)i.GetValue(this))
-                .Concat(classProperties
-                .Where(i => i.PropertyType == typeof(Flag))
-                .Select(i => (Flag)i.GetValue(this)));
-            var properties = classFields
-                .Where(i => i.FieldType == typeof(Property))
-                .Select(i => (Property)i.GetValue(this))
-                .Concat(classProperties
-                .Where(i => i.PropertyType == typeof(Property))
-                .Select(i => (Property)i.GetValue(this)));
-
-            CheckForDuplicateKeywords(flags, properties);
-
-            var allDeclaredArgs = flags.Concat<Argument>(properties);
-            var onExecuteArgs = new List<string>();
-
-            for (var i = 0; i < args.Length; i++)
-            {
-                var argsToCapture = 0;
-                var currentArg = args[i];
-                var nextArg = i + 1 < args.Length ? args[1] : null;
-
-                foreach (var arg in allDeclaredArgs)
-                {
-                    var matchingKeywords = arg.IsMatchingKeyword(new string[] { currentArg, nextArg });
-                    if (matchingKeywords > 0)
-                    {
-                        argsToCapture = matchingKeywords;
-                        break;
-                    }
-                }
-                if (argsToCapture == 0)
-                {
-                    // If arg doesn't match, add to the application arguments
-                    onExecuteArgs.Add(currentArg);
-                }
-                else if (argsToCapture == 2)
-                {
-                    // If a property arg, add extra incriment to skip next arg
-                    i++;
-                }
-                // Do nothing if argsToCapture == 1
-            }
-
-            OnExecute(onExecuteArgs.ToArray());
-        }
-
-        private static void CheckForDuplicateKeywords(IEnumerable<Flag> flags, IEnumerable<Property> properties)
-        {
-            var duplicates = new Dictionary<string, List<Argument>>();
-
-            var uniqueFlagShortKeywords = flags
-                .GroupBy(flag => flag.ShortKeyword)
-                .Where(group => group.Key != "");
-
-            var uniqueFlagLongKeywords = flags
-                .GroupBy(flag => flag.Keyword)
-                .Where(group => group.Key != "");
-
-            var uniquePropertyShortKeywords = properties
-                .GroupBy(property => property.ShortKeyword)
-                .Where(group => group.Key != "");
-
-            var uniquePropertyLongKeywords = properties
-                .GroupBy(property => property.Keyword)
-                .Where(group => group.Key != "");
-
-            AddToDuplicatesCollection(duplicates, uniqueFlagShortKeywords);
-            AddToDuplicatesCollection(duplicates, uniqueFlagLongKeywords);
-            AddToDuplicatesCollection(duplicates, uniquePropertyShortKeywords);
-            AddToDuplicatesCollection(duplicates, uniquePropertyLongKeywords);
-
-            if (duplicates.Any())
-            {
-                var errorMessage = "";
-
-                foreach (var duplicate in duplicates)
-                {
-                    foreach (var arg in duplicate.Value)
-                    {
-                        errorMessage += $"Duplicate argument keyword detected for {arg.GetType().Name}: {duplicate.Key}{Environment.NewLine}";
-                    }
-                }
-
-                throw new AppConfigurationException(errorMessage);
-            }
-        }
-
-        private static void AddToDuplicatesCollection(Dictionary<string, List<Argument>> duplicates, IEnumerable<IGrouping<string, Argument>> arguments)
-        {
-            foreach (var group in arguments)
-            {
-                if (group != null && group.Count() > 1)
-                {
-                    foreach (var arg in group)
-                    {
-                        if (!duplicates.Keys.Contains(group.Key))
-                        {
-                            duplicates.Add(group.Key, new List<Argument>());
-                        }
-                        duplicates[group.Key].Add(arg);
-                    }
-                }
             }
         }
 
