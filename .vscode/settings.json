@@ -14,5 +14,6 @@
 		"**/.idea": true,
 		"**/.nupkg": true
 	},
-	"dotnet-test-explorer.testProjectPath": "CliToolkit.Tests"
+	"dotnet-test-explorer.testProjectPath": "CliToolkit.Tests",
+	"files.eol": "\n"
 }
