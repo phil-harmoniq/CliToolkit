@@ -16,7 +16,7 @@ namespace CliToolkit.Tests.Templates
         
         public static readonly string MsBuildFlagKeyword = "MsBuildDashFlag";
         public static readonly char MsBuildFlagShortKeyword = 'm';
-        public Flag MsBuildDashFlag { get; } = new Flag("MsBuild flag style", MsBuildFlagKeyword, MsBuildFlagShortKeyword, FlagStyle.MsBuild);
+        public Flag MsBuildFlag { get; } = new Flag("MsBuild flag style", MsBuildFlagKeyword, MsBuildFlagShortKeyword, FlagStyle.MsBuild);
 
         
         public static readonly string DoubleDashPropertyKeyword = "DoubleDashProperty";

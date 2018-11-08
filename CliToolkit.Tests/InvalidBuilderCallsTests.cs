@@ -2,7 +2,7 @@ using CliToolkit.Exceptions;
 using CliToolkit.Tests.Templates;
 using Xunit;
 
-namespace CliToolkit.Tests.ConfigurationExceptions
+namespace CliToolkit.Tests
 {
     public class InvalidBuilderCallsTests
     {

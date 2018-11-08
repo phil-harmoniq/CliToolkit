@@ -29,7 +29,7 @@ namespace CliToolkit.Arguments.Styles
         /// Use a forward slash before a keyword to trigger it. A forward slash is also used for short keywords
         /// </summary>
         /// <example>Example: /keyword or /k</example>
-        public static readonly FlagStyle MsBuild = new FlagStyle(SingleDashValue);
+        public static readonly FlagStyle MsBuild = new FlagStyle(MsBuildValue);
 
         private FlagStyle(string style) : base(style, new string[] { DoubleDashValue, SingleDashValue, MsBuildValue }) {}
 

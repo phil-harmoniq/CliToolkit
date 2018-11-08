@@ -3,7 +3,7 @@ using CliToolkit.Tests.Templates.DuplicateKeywords;
 using Xunit;
 using static CliToolkit.Tests.Templates.DuplicateKeywords.Properties;
 
-namespace CliToolkit.Tests.ConfigurationExceptions
+namespace CliToolkit.Tests
 {
     public class DuplicateKeywordsTests
     {

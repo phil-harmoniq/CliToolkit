@@ -7,7 +7,7 @@ namespace CliToolkit
     /// </summary>
     public class AppBuilder<TApp> where TApp : CliApp, new()
     {
-        private readonly CliApp _app;
+        private readonly TApp _app;
 
         /// <summary>
         /// Creates a new AppBuilder for customizing a new CliApp.
@@ -55,7 +55,7 @@ namespace CliToolkit
         /// <summary>
         /// Builds the configured application.
         /// </summary>
-        public CliApp Build()
+        public TApp Build()
         {
             return _app;
         }
@@ -65,9 +65,9 @@ namespace CliToolkit
         /// </summary>
         /// <param name="args">The arguments provided to the application.</param>
         /// <returns></returns>
-        public CliApp Start(string[] args)
+        public TApp Start(string[] args)
         {
-            return _app.Start(args);
+            return (TApp) _app.Start(args);
         }
 
         private static void ThrowIfEmptyString(string value, string message)
