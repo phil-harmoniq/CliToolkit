@@ -3,9 +3,9 @@ using CliToolkit.Arguments;
 
 namespace CliToolkit.Tests.Templates
 {
-    public class ValidSubCommand : Command
+    public class ValidCommand : Command
     {
-        public ValidSubCommand(string description, string keyword) : base(description, keyword)
+        public ValidCommand(string description, string keyword) : base(description, keyword)
         {
         }
 

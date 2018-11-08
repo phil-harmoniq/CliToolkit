@@ -130,9 +130,9 @@ namespace CliToolkit.Tests
         #region Commands
 
         [Fact]
-        public void DuplicateSubCommandKeyword()
+        public void DuplicateCommandKeyword()
         {
-            var app = new DuplicateSubCommandKeywordApp();
+            var app = new DuplicateCommandKeywordApp();
             Assert.Throws<AppConfigurationException>(() => app.Start(new string[0]));
         }
 

@@ -39,8 +39,8 @@ namespace CliToolkit.Tests.Templates
         public static readonly char MsBuildPropertyShortKeyword = 'M';
         public Property MsBuildProperty = new Property("MsBuild property style", MsBuildPropertyKeyword, MsBuildPropertyShortKeyword, PropertyStyle.MsBuild);
 
-        public static readonly string CommandKeyword = "SubCommand";
-        public Command SubCommand = new ValidSubCommand("Subcommand default style", CommandKeyword);
+        public static readonly string CommandKeyword = "Command";
+        public Command Command = new ValidCommand("Command default style", CommandKeyword);
 
         public override void OnExecute(string[] args)
         {
