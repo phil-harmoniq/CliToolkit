@@ -1,4 +1,5 @@
 using CliToolkit.Exceptions;
+using CliToolkit.Meta;
 
 namespace CliToolkit
 {
@@ -23,7 +24,7 @@ namespace CliToolkit
         public AppBuilder<TApp> SetName(string name)
         {
             ThrowIfEmptyString(name, "SetName() was called with an empty string.");
-            _app.Name = name;
+            _app.AppInfo.Name = name;
             return this;
         }
 
@@ -33,22 +34,7 @@ namespace CliToolkit
         public AppBuilder<TApp> SetVersion(string version)
         {
             ThrowIfEmptyString(version, "SetVersion() was called with an empty string.");
-            _app.Version = version;
-            return this;
-        }
-
-        /// <summary>
-        /// Sets the application' header and footer text.
-        /// </summary>
-        /// <param name="header">The new header.</param>
-        /// <param name="footer">(Optional) The new footer text.</param>
-        /// <returns></returns>
-        public AppBuilder<TApp> SetHeader(string header, string footer = null)
-        {
-            ThrowIfEmptyString(header, "SetHeader() was called with an empty string.");
-            if (footer != null) { ThrowIfEmptyString(footer, "Optional footer was empty when calling SetHeader()"); }
-            _app._headerText = header;
-            _app._footerText = footer;
+            _app.AppInfo.Version = version;
             return this;
         }
 

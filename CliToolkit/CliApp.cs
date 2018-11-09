@@ -14,26 +14,10 @@ namespace CliToolkit
     /// </summary>
     public abstract class CliApp : ICommand
     {
-        private bool _headerWasShown = false;
-        private int _width = 64;
-
-        internal string _headerText;
-        internal string _footerText;
-        
-        /// <summary>
-        /// This application's name.
-        /// </summary>
-        public string Name { get; internal set; }
-
-        /// <summary>
-        /// This application's assembly version.
-        /// </summary>
-        public string Version { get; internal set; }
-
         /// <summary>
         /// Contains meta-data about this application and its environment.
         /// </summary>
-        public AppInfo AppInfo { get; private set; }
+        public AppInfo AppInfo { get; } = new AppInfo();
 
         /// <summary>
         /// The exit code after running <see cref="OnExecute" />
@@ -46,12 +30,6 @@ namespace CliToolkit
         /// </summary>
         protected CliApp()
         {
-            AppInfo = new AppInfo();
-            Name = AppInfo.Assembly.GetName().Name;
-            Version = AppInfo.FileVersionInfo.ProductVersion;
-
-            _headerText = CompileHeaderText();
-            _footerText = CompileFooterText();
         }
 
         /// <summary>
@@ -93,7 +71,7 @@ namespace CliToolkit
             }
             finally
             {
-                if (_headerWasShown) { PrintFooter(); }
+                if (TextHelpers.HeaderWasShown) { TextHelpers.PrintFooter(this); }
             }
             return this;
         }
@@ -103,35 +81,12 @@ namespace CliToolkit
         /// </summary>
         public void PrintHeader()
         {
-            _headerWasShown = true;
-            Console.WriteLine(_headerText);
+            TextHelpers.PrintHeader(this);
         }
 
-        private void PrintFooter()
+        public void PrintHelpMenu()
         {
-            if (!string.IsNullOrEmpty(_footerText))
-            {
-                Console.WriteLine(_footerText);
-            }
-        }
-
-        private string CompileHeaderText()
-        {
-            var title = $" {Name} {Version} ";
-            if (title.Length >= _width) { return $"-{title}-"; }
-
-            var titleLengthIsOdd = title.Length % 2 == 1;
-            var barLength = (_width - title.Length) / 2;
-
-            var leftBar = new string('-', barLength);
-            var rightBar = new string('-', titleLengthIsOdd ? barLength + 1 : barLength);
-
-            return $"{AppInfo.NewLine}{leftBar}{title}{rightBar}";
-        }
-
-        private string CompileFooterText()
-        {
-            return $"{new string('-', _width)}{AppInfo.NewLine}";
+            TextHelpers.PrintHelpMenu(this);
         }
     }
 }

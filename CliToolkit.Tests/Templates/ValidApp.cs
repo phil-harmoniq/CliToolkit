@@ -49,7 +49,7 @@ namespace CliToolkit.Tests.Templates
         #region Commands
 
         public const string DefaultCommandKeyword = "Command";
-        public Command DefaultCommand = new ValidCommand("Command default style", DefaultCommandKeyword);
+        public Command DefaultCommand = new ValidCommand("Command default style", DefaultCommandKeyword, this);
 
         #endregion
         

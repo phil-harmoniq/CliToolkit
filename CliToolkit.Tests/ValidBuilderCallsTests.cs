@@ -6,11 +6,16 @@ namespace CliToolkit.Tests
 {
     public class ValidBuilderCallsTests
     {
+        public const string CustomeAppName = "CustomAppName";
+
         [Fact]
         public void EmptyNameString_ShouldThrowAppConfigurationException()
         {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetName(""));
+            var app = new AppBuilder<ValidApp>()
+                .SetName(CustomeAppName)
+                .Build();
+            
+            Assert.Equal(app.AppInfo.Name = CustomeAppName);
         }
 
         [Fact]
@@ -18,20 +23,6 @@ namespace CliToolkit.Tests
         {
             var builder = new AppBuilder<ValidApp>();
             Assert.Throws<AppConfigurationException>(() => builder.SetVersion(""));
-        }
-
-        [Fact]
-        public void EmptyHeaderString_ShouldThrowAppConfigurationException()
-        {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader(""));
-        }
-
-        [Fact]
-        public void EmptyFooterString_ShouldThrowAppConfigurationException()
-        {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader("Non-empty header", ""));
         }
     }
 }
