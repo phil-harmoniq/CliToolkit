@@ -5,47 +5,47 @@ namespace CliToolkit.Tests
 {
     public class KeywordMatchingTests
     {
-        public static readonly string ValueString = "ValueString";
+        public const string ValueString = "ValueString";
 
         #region Flags
 
         [Fact]
-        public void DoubleDashFlagKeywordTest()
+        public void DoubleDashFlagKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"--{ValidApp.DoubleDashFlagKeyword}" });
             Assert.True(app.DoubleDashFlag.IsActive);
         }
 
         [Fact]
-        public void DoubleDashFlagShortKeywordTest()
+        public void DoubleDashFlagShortKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.DoubleDashFlagShortKeyword}" });
             Assert.True(app.DoubleDashFlag.IsActive);
         }
 
         [Fact]
-        public void SingleDashFlagKeywordTest()
+        public void SingleDashFlagKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashFlagKeyword}" });
             Assert.True(app.SingleDashFlag.IsActive);
         }
 
         [Fact]
-        public void SingleDashFlagShortKeywordTest()
+        public void SingleDashFlagShortKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashFlagShortKeyword}" });
             Assert.True(app.SingleDashFlag.IsActive);
         }
 
         [Fact]
-        public void MsBuildFlagKeywordTest()
+        public void MsBuildFlagKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildFlagKeyword}" });
             Assert.True(app.MsBuildFlag.IsActive);
         }
 
         [Fact]
-        public void MsBuildFlagShortKeywordTest()
+        public void MsBuildFlagShortKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildFlagShortKeyword}" });
             Assert.True(app.MsBuildFlag.IsActive);
@@ -56,7 +56,7 @@ namespace CliToolkit.Tests
         #region Properties
         
         [Fact]
-        public void DoubleDashPropertyKeywordTest()
+        public void DoubleDashPropertyKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"--{ValidApp.DoubleDashPropertyKeyword}", ValueString });
             Assert.True(app.DoubleDashProperty.IsActive);
@@ -64,7 +64,7 @@ namespace CliToolkit.Tests
         }
         
         [Fact]
-        public void DoubleDashPropertyShortKeywordTest()
+        public void DoubleDashPropertyShortKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.DoubleDashPropertyShortKeyword}", ValueString });
             Assert.True(app.DoubleDashProperty.IsActive);
@@ -72,7 +72,7 @@ namespace CliToolkit.Tests
         }
 
         [Fact]
-        public void DoubleDashWithEqualPropertyKeywordTest()
+        public void DoubleDashWithEqualPropertyKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"--{ValidApp.DoubleDashWithEqualPropertyKeyword}={ValueString}" });
             Assert.True(app.DoubleDashWithEqualProperty.IsActive);
@@ -80,7 +80,7 @@ namespace CliToolkit.Tests
         }
 
         [Fact]
-        public void DoubleDashWithEqualPropertyShortKeywordTest()
+        public void DoubleDashWithEqualPropertyShortKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.DoubleDashWithEqualPropertyShortKeyword}={ValueString}" });
             Assert.True(app.DoubleDashWithEqualProperty.IsActive);
@@ -88,7 +88,7 @@ namespace CliToolkit.Tests
         }
         
         [Fact]
-        public void SingleDashPropertyKeywordTest()
+        public void SingleDashPropertyKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashPropertyKeyword}", ValueString });
             Assert.True(app.SingleDashProperty.IsActive);
@@ -96,7 +96,7 @@ namespace CliToolkit.Tests
         }
         
         [Fact]
-        public void SingleDashPropertyShortKeywordTest()
+        public void SingleDashPropertyShortKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashPropertyShortKeyword}", ValueString });
             Assert.True(app.SingleDashProperty.IsActive);
@@ -104,7 +104,7 @@ namespace CliToolkit.Tests
         }
 
         [Fact]
-        public void SingleDashWithEqualPropertyKeywordTest()
+        public void SingleDashWithEqualPropertyKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashWithEqualPropertyKeyword}={ValueString}" });
             Assert.True(app.SingleDashWithEqualProperty.IsActive);
@@ -112,7 +112,7 @@ namespace CliToolkit.Tests
         }
 
         [Fact]
-        public void SingleDashWithEqualPropertyShortKeywordTest()
+        public void SingleDashWithEqualPropertyShortKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"-{ValidApp.SingleDashWithEqualPropertyShortKeyword}={ValueString}" });
             Assert.True(app.SingleDashWithEqualProperty.IsActive);
@@ -120,7 +120,7 @@ namespace CliToolkit.Tests
         }
         
         [Fact]
-        public void MsBuildPropertyKeywordTest()
+        public void MsBuildPropertyKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildPropertyKeyword}={ValueString}" });
             Assert.True(app.MsBuildProperty.IsActive);
@@ -128,13 +128,24 @@ namespace CliToolkit.Tests
         }
         
         [Fact]
-        public void MsBuildPropertyShortKeywordTest()
+        public void MsBuildPropertyShortKeyword_ShouldBeActiveAndContainCorrectValue()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { $"/{ValidApp.MsBuildPropertyShortKeyword}={ValueString}" });
             Assert.True(app.MsBuildProperty.IsActive);
             Assert.Equal(app.MsBuildProperty.Value, ValueString);
         }
         
+        #endregion
+
+        #region Commands
+        
+        [Fact]
+        public void CommandKeyword_ShouldBeActiveAndContainCorrectValue()
+        {
+            var app = new AppBuilder<ValidApp>().Start(new string[] { ValidApp.DefaultCommandKeyword });
+            Assert.True(app.DefaultCommand.IsActive);
+        }
+
         #endregion
     }
 }

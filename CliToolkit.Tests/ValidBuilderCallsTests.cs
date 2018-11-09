@@ -4,7 +4,7 @@ using Xunit;
 
 namespace CliToolkit.Tests
 {
-    public class InvalidBuilderCallsTests
+    public class ValidBuilderCallsTests
     {
         [Fact]
         public void EmptyNameString_ShouldThrowAppConfigurationException()
