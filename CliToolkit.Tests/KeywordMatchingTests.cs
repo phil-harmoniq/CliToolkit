@@ -140,7 +140,7 @@ namespace CliToolkit.Tests
         #region Commands
         
         [Fact]
-        public void CommandKeyword_ShouldBeActiveAndContainCorrectValue()
+        public void CommandKeyword_ShouldBeActive()
         {
             var app = new AppBuilder<ValidApp>().Start(new string[] { ValidApp.DefaultCommandKeyword });
             Assert.True(app.DefaultCommand.IsActive);

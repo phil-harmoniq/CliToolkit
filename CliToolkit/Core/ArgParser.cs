@@ -4,7 +4,7 @@ using System.Linq;
 using CliToolkit.Arguments;
 using CliToolkit.Exceptions;
 
-namespace CliToolkit.Utilities
+namespace CliToolkit.Core
 {
     internal static class ArgParser
     {
@@ -52,7 +52,7 @@ namespace CliToolkit.Utilities
                     var matchingKeywords = arg.IsMatchingKeyword(new string[] { currentArg, nextArg });
                     if (matchingKeywords > 0)
                     {
-                        if (arg.GetType() == typeof(Command))
+                        if (arg is Command)
                         {
                             commandFound = true;
                             commandTarget = (Command) arg;

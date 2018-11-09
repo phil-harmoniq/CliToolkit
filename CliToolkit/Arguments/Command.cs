@@ -1,4 +1,4 @@
-using CliToolkit.Utilities;
+using CliToolkit.Core;
 
 namespace CliToolkit.Arguments
 {
@@ -12,7 +12,11 @@ namespace CliToolkit.Arguments
 
         internal override int IsMatchingKeyword(string[] args)
         {
-            if (args[0].Equals(Keyword)) { return 1; }
+            if (args[0].Equals(Keyword))
+            {
+                IsActive = true;
+                return 1;
+            }
             return 0;
         }
     }

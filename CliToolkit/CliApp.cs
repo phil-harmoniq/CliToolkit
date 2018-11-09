@@ -5,7 +5,7 @@ using System.Reflection;
 using CliToolkit.Arguments;
 using CliToolkit.Exceptions;
 using CliToolkit.Meta;
-using CliToolkit.Utilities;
+using CliToolkit.Core;
 
 namespace CliToolkit
 {
