@@ -5,7 +5,7 @@ namespace CliToolkit.Tests.Templates
 {
     public class ValidCommand : Command
     {
-        public ValidCommand(string description, string keyword, CliApp parent) : base(description, keyword, parent)
+        public ValidCommand(string description, string keyword) : base(description, keyword)
         {
         }
 

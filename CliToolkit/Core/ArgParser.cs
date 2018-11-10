@@ -8,29 +8,31 @@ namespace CliToolkit.Core
 {
     internal static class ArgParser
     {
-        internal static void ParseArgs(ICommand command, string[] args)
+        internal static void ParseArgs(ICommand caller, string[] args)
         {
-            var classFields = command.GetType().GetFields();
-            var classProperties = command.GetType().GetProperties();
+            var classFields = caller.GetType().GetFields();
+            var classProperties = caller.GetType().GetProperties();
 
             var flags = classFields
                 .Where(i => i.FieldType == typeof(Flag))
-                .Select(i => (Flag)i.GetValue(command))
+                .Select(i => (Flag)i.GetValue(caller))
                 .Concat(classProperties
                 .Where(i => i.PropertyType == typeof(Flag))
-                .Select(i => (Flag)i.GetValue(command)));
+                .Select(i => (Flag)i.GetValue(caller)));
             var properties = classFields
                 .Where(i => i.FieldType == typeof(Property))
-                .Select(i => (Property)i.GetValue(command))
+                .Select(i => (Property)i.GetValue(caller))
                 .Concat(classProperties
                 .Where(i => i.PropertyType == typeof(Property))
-                .Select(i => (Property)i.GetValue(command)));
+                .Select(i => (Property)i.GetValue(caller)));
             var commands = classFields
                 .Where(i => i.FieldType == typeof(Command))
-                .Select(i => (Command)i.GetValue(command))
+                .Select(i => (Command)i.GetValue(caller))
                 .Concat(classProperties
                 .Where(i => i.PropertyType == typeof(Command))
-                .Select(i => (Command)i.GetValue(command)));
+                .Select(i => (Command)i.GetValue(caller)));
+            
+            foreach (var command in commands) { command.SetParent(caller); }
 
             CheckForDuplicateKeywords(flags, properties, commands);
 
@@ -82,7 +84,7 @@ namespace CliToolkit.Core
             }
             else
             {
-                command.OnExecute(onExecuteArgs.ToArray());
+                caller.OnExecute(onExecuteArgs.ToArray());
             }
         }
 

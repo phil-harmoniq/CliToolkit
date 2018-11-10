@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using CliToolkit.Core;
+using CliToolkit.Exceptions;
 using CliToolkit.Meta;
 
 namespace CliToolkit.Arguments
@@ -9,18 +10,11 @@ namespace CliToolkit.Arguments
     {
         private bool _parentIsCliApp = false;
 
-        public ICommand Parent { get; }
-
-        protected Command(string description, string keyword, CliApp parent) : base(description, keyword)
+        protected Command(string description, string keyword) : base(description, keyword)
         {
-            Parent = parent;
-            _parentIsCliApp = true;
         }
 
-        protected Command(string description, string keyword, ICommand parent) : base(description, keyword)
-        {
-            Parent = parent;
-        }
+        public ICommand Parent { get; private set; }
 
         public abstract void OnExecute(string[] args);
 
@@ -55,6 +49,19 @@ namespace CliToolkit.Arguments
                 return 1;
             }
             return 0;
+        }
+        
+        internal void SetParent(ICommand parent)
+        {
+            if (parent == null)
+            { 
+                var message = $"{Description}:{Environment.NewLine}Parent object was null.";
+                throw new AppConfigurationException(message);
+            }
+
+            if (parent is CliApp) { _parentIsCliApp = true; }
+            
+            Parent = parent;
         }
     }
 }

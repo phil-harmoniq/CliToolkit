@@ -15,7 +15,7 @@ namespace CliToolkit.Tests
                 .SetName(CustomeAppName)
                 .Build();
             
-            Assert.Equal(app.AppInfo.Name = CustomeAppName);
+            Assert.Equal(app.AppInfo.Name, CustomeAppName);
         }
 
         [Fact]
