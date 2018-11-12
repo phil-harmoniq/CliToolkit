@@ -19,5 +19,19 @@ namespace CliToolkit.Tests
             var builder = new AppBuilder<ValidApp>();
             Assert.Throws<AppConfigurationException>(() => builder.SetVersion(""));
         }
+
+        [Fact]
+        public void WidthSmallerThanMinimum_ShouldThrowAppConfigurationException()
+        {
+            var builder = new AppBuilder<ValidApp>();
+            Assert.Throws<AppConfigurationException>(() => builder.SetWidth(12));
+        }
+
+        [Fact]
+        public void WidthLargerThanMaximum_ShouldThrowAppConfigurationException()
+        {
+            var builder = new AppBuilder<ValidApp>();
+            Assert.Throws<AppConfigurationException>(() => builder.SetWidth(256));
+        }
     }
 }

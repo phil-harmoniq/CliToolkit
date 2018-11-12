@@ -9,6 +9,8 @@ namespace CliToolkit
     public class AppBuilder<TApp> where TApp : CliApp, new()
     {
         private readonly TApp _app;
+        private const int _minimumWidth = 32;
+        private const int _maximumWidth = 128;
 
         /// <summary>
         /// Creates a new AppBuilder for customizing a new CliApp.
@@ -35,6 +37,21 @@ namespace CliToolkit
         {
             ThrowIfEmptyString(version, "SetVersion() was called with an empty string.");
             _app.AppInfo.Version = version;
+            return this;
+        }
+
+        public AppBuilder<TApp> SetWidth(int width)
+        {
+            if (width > _maximumWidth)
+            {
+                throw new AppConfigurationException($"Given width {width} is larger than the maximum width {_maximumWidth}");
+            }
+            if (width < _minimumWidth)
+            {
+                throw new AppConfigurationException($"Given width {width} is smaller than the minimum width {_minimumWidth}");
+            }
+
+            _app.AppInfo.Width = width;
             return this;
         }
 
