@@ -67,12 +67,16 @@ namespace CliToolkit
             }
             catch (AppRuntimeException exception)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error:{AppInfo.NewLine}{exception.Message}");
+                Console.ResetColor();
+                ExitCode = exception.ExitCode;
             }
             finally
             {
                 if (TextHelpers.HeaderWasShown) { TextHelpers.PrintFooter(this); }
             }
+
             return this;
         }
 
