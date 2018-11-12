@@ -20,7 +20,7 @@ namespace CliToolkit.Arguments
         /// </summary>
         public bool IsActive { get; protected set; }
 
-        protected Argument(string description, string keyword)
+        internal Argument(string description, string keyword)
         {
             Description = description;
             Keyword = keyword;

@@ -33,9 +33,9 @@ namespace CliToolkit
         }
 
         /// <summary>
-        /// <param name="args">The arguments passed to this application.</param>
         /// Defines the default behavior when this application is executed.
         /// </summary>
+        /// <param name="args">The arguments passed to this application.</param>
         public abstract void OnExecute(string[] args);
 
         // /// <summary>
@@ -84,6 +84,9 @@ namespace CliToolkit
             TextHelpers.PrintHeader(this);
         }
 
+        /// <summary>
+        /// Prints a help menu that list all available commands and/or arguments contained in this CliApp.
+        /// </summary>
         public void PrintHelpMenu()
         {
             TextHelpers.PrintHelpMenu(this);

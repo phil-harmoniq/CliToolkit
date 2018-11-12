@@ -30,6 +30,10 @@ namespace CliToolkit.Meta
         /// </summary>
         public int Width { get; internal set; }
 
+        /// <summary>
+        /// Defines the color that will be used to print the title in the header.
+        /// </summary>
+        /// <value></value>
         public ConsoleColor TitleColor { get; internal set; }
         
         /// <summary>

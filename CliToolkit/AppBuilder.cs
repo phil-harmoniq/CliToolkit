@@ -31,7 +31,7 @@ namespace CliToolkit
         }
 
         /// <summary>
-        /// Overrides the application's version with the given value.
+        /// Overrides the application's version string with the given value.
         /// </summary>
         public AppBuilder<TApp> SetVersion(string version)
         {
@@ -40,6 +40,11 @@ namespace CliToolkit
             return this;
         }
 
+        /// <summary>
+        /// Overrides the application's interface width with the given value.
+        /// </summary>
+        /// <param name="width"></param>
+        /// <returns></returns>
         public AppBuilder<TApp> SetWidth(int width)
         {
             if (width > _maximumWidth)
