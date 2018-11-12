@@ -12,6 +12,8 @@ before_script:
 script:
 - "dotnet build /p:CiBuildId=$TRAVIS_BUILD_NUMBER"
 - "dotnet test CliToolkit.Tests --no-build"
+- "./app-test.sh --help"
+- "./app-test.sh list --help"
 - "./app-test.sh list ~ --hidden --verbose"
 - "! ./app-test.sh error"
 
