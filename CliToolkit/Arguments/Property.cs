@@ -9,8 +9,6 @@ namespace CliToolkit.Arguments
     /// </summary>
     public sealed class Property : Argument
     {
-        private readonly PropertyStyle _style;
-
         /// <summary>
         /// A single letter that will also trigger this property. This value is optional.
         /// </summary>
@@ -33,12 +31,12 @@ namespace CliToolkit.Arguments
         {
             if (shortKeyword != null) { ShortKeyword = shortKeyword.ToString(); }
             if (style == null) { style = PropertyStyle.DoubleDash; }
-            _style = style;
+            Style = style;
         }
 
         internal override int IsMatchingKeyword(string[] args)
         {
-            switch (_style)
+            switch (Style)
             {
                 case PropertyStyle.DoubleDashValue:
                     return ParseDoubleDashStyleArg(args[0], args[1]);

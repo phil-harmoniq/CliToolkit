@@ -13,6 +13,8 @@ namespace CliToolkit.Arguments
     {
         private bool _parentIsCliApp = false;
 
+        internal HelpMenu HelpMenu { get; } = new HelpMenu("Displays the available options for this command.", "help", "h");
+
         /// <summary>
         /// Creates a new strongly-typed CLI command.
         /// </summary>
@@ -50,7 +52,7 @@ namespace CliToolkit.Arguments
             TextHelpers.PrintHelpMenu(this);
         }
 
-        private CliApp ResolveBaseApplication()
+        internal CliApp ResolveBaseApplication()
         {
             if (_parentIsCliApp)
             {

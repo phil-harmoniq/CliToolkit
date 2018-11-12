@@ -25,6 +25,8 @@ namespace CliToolkit
         /// <value>Any non-zero value indicates an error during execution.</value>
         public int ExitCode { get; internal set; }
 
+        internal HelpMenu HelpMenu { get; } = new HelpMenu("Displays the available options for this command.", "help", "h");
+
         /// <summary>
         /// Constructs a new <see cref="CliApp" /> instance. This should not be called directly.
         /// </summary>

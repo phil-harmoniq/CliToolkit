@@ -62,5 +62,45 @@ namespace CliToolkit.Arguments.Styles
         {
             return Value == propertyStyle.Value;
         }
+
+        internal override string GetPrefix(bool isShortValue)
+        {
+            if (isShortValue)
+            {
+                switch (Value)
+                {
+                    case PropertyStyle.DoubleDashValue:
+                        return "-";
+                    case PropertyStyle.DoubleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.SingleDashValue:
+                        return "-";
+                    case PropertyStyle.SingleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
+            else
+            {
+                switch (Value)
+                {
+                    case PropertyStyle.DoubleDashValue:
+                        return "--";
+                    case PropertyStyle.DoubleDashWithEqualValue:
+                        return "--";
+                    case PropertyStyle.SingleDashValue:
+                        return "-";
+                    case PropertyStyle.SingleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
+        }
     }
 }

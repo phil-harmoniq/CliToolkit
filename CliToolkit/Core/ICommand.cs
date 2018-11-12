@@ -1,3 +1,4 @@
+using CliToolkit.Arguments;
 using CliToolkit.Meta;
 
 namespace CliToolkit.Core
@@ -17,7 +18,6 @@ namespace CliToolkit.Core
         /// Prints the app header. The footer will also be printed after execution is complete.
         /// </summary>
         void PrintHeader();
-
 
         /// <summary>
         /// Prints a help menu that list all available commands and/or arguments contained in this command.

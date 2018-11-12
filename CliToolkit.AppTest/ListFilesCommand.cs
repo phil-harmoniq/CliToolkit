@@ -13,7 +13,7 @@ namespace CliToolkit.AppTest
         {
         }
 
-        public Flag HiddenFlag = new Flag("Show hidden files", "hidden", 'h');
+        public Flag HiddenFlag = new Flag("Show hidden files", "hidden");
         public Flag VerboseFlag = new Flag("Show header and footer information", "verbose", 'v');
 
         public override void OnExecute(string[] args)

@@ -11,7 +11,7 @@
             "preLaunchTask": "Build AppTest",
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/CliToolkit.AppTest/bin/Debug/netcoreapp2.1/CliToolkit.AppTest.dll",
-            "args": [],
+            "args": [ "list" , "--help"],
             "cwd": "${workspaceFolder}/CliToolkit.AppTest",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",

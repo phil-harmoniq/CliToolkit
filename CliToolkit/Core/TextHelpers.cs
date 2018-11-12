@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using CliToolkit.Arguments;
 using CliToolkit.Meta;
 
@@ -46,6 +47,10 @@ namespace CliToolkit.Core
 
         internal static void PrintHelpMenu(ICommand caller)
         {
+            var helpMenu = (HelpMenu) caller.GetType()
+                .GetProperty("HelpMenu", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(caller);
+
             var classFields = caller.GetType().GetFields();
             var classProperties = caller.GetType().GetProperties();
 
@@ -68,17 +73,20 @@ namespace CliToolkit.Core
                 .Where(i => i.PropertyType == typeof(Command))
                 .Select(i => (Command)i.GetValue(caller)))
                 .OrderBy(c => c.Keyword);
-            
             var optionalArgs = flags.Concat<Argument>(properties)
+                .Concat<Argument>(new HelpMenu[] { helpMenu })
                 .OrderBy(arg => arg.Keyword);
             
             caller.PrintHeader();
+            
             Console.WriteLine();
 
             foreach (var command in commands)
             {
                 Console.WriteLine($"    {command.Keyword}    {command.Description}");
             }
+
+            if (commands.Count() > 0) { Console.WriteLine(); }
 
             foreach (var arg in optionalArgs)
             {
@@ -88,11 +96,11 @@ namespace CliToolkit.Core
 
                     if (string.IsNullOrEmpty(flag.ShortKeyword))
                     {
-                        Console.WriteLine($"    {flag.Keyword}  or  {flag.ShortKeyword}    {flag.Description}");
+                        Console.WriteLine($"    {flag.Style.GetPrefix(false)}{flag.Keyword}    {flag.Description}");
                     }
                     else
                     {
-                        Console.WriteLine($"    {flag.Keyword}    {flag.Description}");
+                        Console.WriteLine($"    {flag.Style.GetPrefix(false)}{flag.Keyword}  or  {flag.Style.GetPrefix(true)}{flag.ShortKeyword}    {flag.Description}");
                     }
                 }
                 else if (arg is Property)
@@ -101,12 +109,17 @@ namespace CliToolkit.Core
 
                     if (string.IsNullOrEmpty(property.ShortKeyword))
                     {
-                        Console.WriteLine($"    {property.Keyword}  or  {property.ShortKeyword}    {property.Description}");
+                        Console.WriteLine($"    {property.Style.GetPrefix(false)}{property.Keyword}    {property.Description}");
                     }
                     else
                     {
-                        Console.WriteLine($"    {property.Keyword}    {property.Description}");
+                        Console.WriteLine($"    {property.Style.GetPrefix(false)}{property.Keyword}  or  {property.Style.GetPrefix(true)}{property.ShortKeyword}    {property.Description}");
                     }
+                }
+                else if (arg is HelpMenu)
+                {
+                    var help = (HelpMenu) arg;
+                    Console.WriteLine($"    {help.Style.GetPrefix(false)}{help.Keyword}  or  {help.Style.GetPrefix(false)}{help.ShortKeyword}    {help.Description}");
                 }
             }
             Console.WriteLine();

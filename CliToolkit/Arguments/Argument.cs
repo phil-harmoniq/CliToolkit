@@ -1,3 +1,5 @@
+using CliToolkit.Arguments.Styles;
+
 namespace CliToolkit.Arguments
 {
     /// <summary>
@@ -5,6 +7,8 @@ namespace CliToolkit.Arguments
     /// </summary>
     public abstract class Argument
     {
+        internal Style Style { get; set; }
+
         /// <summary>
         /// Describes the purpose of this command-line argument.
         /// </summary>
