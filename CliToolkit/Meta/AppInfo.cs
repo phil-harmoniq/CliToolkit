@@ -51,6 +51,8 @@ namespace CliToolkit.Meta
         {
             Name = AppInfo.Assembly.GetName().Name;
             Version = AppInfo.FileVersionInfo.ProductVersion;
+            TitleColor = ConsoleColor.Cyan;
+            Width = 64;
 
             IsLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
             IsMacOS = RuntimeInformation.IsOSPlatform(OSPlatform.OSX);

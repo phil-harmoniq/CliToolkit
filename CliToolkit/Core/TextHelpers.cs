@@ -29,16 +29,19 @@ namespace CliToolkit.Core
                 rightBar = new string('-', titleLengthIsOdd ? barLength + 1 : barLength);
             }
 
+            Console.WriteLine();
             Console.Write(leftBar);
             Console.ForegroundColor = baseApp.AppInfo.TitleColor;
-            Console.WriteLine(title);
-            Console.Write(rightBar);
+            Console.Write(title);
+            Console.ResetColor();
+            Console.WriteLine(rightBar);
             HeaderWasShown = true;
         }
 
         internal static void PrintFooter(CliApp baseApp)
         {
             Console.WriteLine(new string('-', baseApp.AppInfo.Width));
+            Console.WriteLine();
         }
 
         internal static void PrintHelpMenu(ICommand caller)
@@ -106,6 +109,7 @@ namespace CliToolkit.Core
                     }
                 }
             }
+            Console.WriteLine();
         }
     }
 }

@@ -10,6 +10,7 @@ namespace CliToolkit.Arguments
     {
         private bool _parentIsCliApp = false;
 
+
         protected Command(string description, string keyword) : base(description, keyword)
         {
         }
