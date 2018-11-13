@@ -1,4 +1,5 @@
 using CliToolkit.Exceptions;
+using CliToolkit.Meta;
 
 namespace CliToolkit
 {
@@ -8,6 +9,8 @@ namespace CliToolkit
     public class AppBuilder<TApp> where TApp : CliApp, new()
     {
         private readonly TApp _app;
+        private const int _minimumWidth = 32;
+        private const int _maximumWidth = 128;
 
         /// <summary>
         /// Creates a new AppBuilder for customizing a new CliApp.
@@ -23,32 +26,37 @@ namespace CliToolkit
         public AppBuilder<TApp> SetName(string name)
         {
             ThrowIfEmptyString(name, "SetName() was called with an empty string.");
-            _app.Name = name;
+            _app.AppInfo.Name = name;
             return this;
         }
 
         /// <summary>
-        /// Overrides the application's version with the given value.
+        /// Overrides the application's version string with the given value.
         /// </summary>
         public AppBuilder<TApp> SetVersion(string version)
         {
             ThrowIfEmptyString(version, "SetVersion() was called with an empty string.");
-            _app.Version = version;
+            _app.AppInfo.Version = version;
             return this;
         }
 
         /// <summary>
-        /// Sets the application' header and footer text.
+        /// Overrides the application's interface width with the given value.
         /// </summary>
-        /// <param name="header">The new header.</param>
-        /// <param name="footer">(Optional) The new footer text.</param>
+        /// <param name="width"></param>
         /// <returns></returns>
-        public AppBuilder<TApp> SetHeader(string header, string footer = null)
+        public AppBuilder<TApp> SetWidth(int width)
         {
-            ThrowIfEmptyString(header, "SetHeader() was called with an empty string.");
-            if (footer != null) { ThrowIfEmptyString(footer, "Optional footer was empty when calling SetHeader()"); }
-            _app._headerText = header;
-            _app._footerText = footer;
+            if (width > _maximumWidth)
+            {
+                throw new AppConfigurationException($"Given width {width} is larger than the maximum width {_maximumWidth}");
+            }
+            if (width < _minimumWidth)
+            {
+                throw new AppConfigurationException($"Given width {width} is smaller than the minimum width {_minimumWidth}");
+            }
+
+            _app.AppInfo.Width = width;
             return this;
         }
 

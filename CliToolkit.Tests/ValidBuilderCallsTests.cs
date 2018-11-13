@@ -6,32 +6,38 @@ namespace CliToolkit.Tests
 {
     public class ValidBuilderCallsTests
     {
+        public const string CustomAppName = "CustomAppName";
+        public const string CustomVersionString = "2.1.0";
+        public const int CustomWidth = 72;
+
         [Fact]
-        public void EmptyNameString_ShouldThrowAppConfigurationException()
+        public void SetName_ShouldOverwriteAppName()
         {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetName(""));
+            var app = new AppBuilder<ValidApp>()
+                .SetName(CustomAppName)
+                .Build();
+            
+            Assert.Equal(app.AppInfo.Name, CustomAppName);
         }
 
         [Fact]
-        public void EmptyVersionString_ShouldThrowAppConfigurationException()
+        public void SetVersion_ShouldOverwriteAppVersionString()
         {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetVersion(""));
+            var app = new AppBuilder<ValidApp>()
+                .SetVersion(CustomVersionString)
+                .Build();
+            
+            Assert.Equal(app.AppInfo.Version, CustomVersionString);
         }
 
         [Fact]
-        public void EmptyHeaderString_ShouldThrowAppConfigurationException()
+        public void SetWidth_ShouldOverwriteAppWidth()
         {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader(""));
-        }
-
-        [Fact]
-        public void EmptyFooterString_ShouldThrowAppConfigurationException()
-        {
-            var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader("Non-empty header", ""));
+            var app = new AppBuilder<ValidApp>()
+                .SetWidth(CustomWidth)
+                .Build();
+            
+            Assert.Equal(app.AppInfo.Width, CustomWidth);
         }
     }
 }

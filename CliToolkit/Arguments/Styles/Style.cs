@@ -15,6 +15,8 @@ namespace CliToolkit.Arguments.Styles
         protected readonly string Value;
         private static IReadOnlyCollection<string> _validValues;
 
+        internal abstract string GetPrefix(bool isShortValue);
+
         internal Style(string style, string[] validValues)
         {
             _validValues = validValues;

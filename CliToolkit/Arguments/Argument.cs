@@ -1,3 +1,5 @@
+using CliToolkit.Arguments.Styles;
+
 namespace CliToolkit.Arguments
 {
     /// <summary>
@@ -5,6 +7,8 @@ namespace CliToolkit.Arguments
     /// </summary>
     public abstract class Argument
     {
+        internal Style Style { get; set; }
+
         /// <summary>
         /// Describes the purpose of this command-line argument.
         /// </summary>
@@ -20,7 +24,7 @@ namespace CliToolkit.Arguments
         /// </summary>
         public bool IsActive { get; protected set; }
 
-        protected Argument(string description, string keyword)
+        internal Argument(string description, string keyword)
         {
             Description = description;
             Keyword = keyword;
