@@ -1,1 +1,1 @@
-dotnet CliToolkit.AppTest\bin\Debug\netcoreapp2.1\CliToolkit.AppTest.dll $args
+dotnet (Join-Path $PSScriptRoot CliToolkit.AppTest bin Debug netcoreapp2.1 CliToolkit.AppTest.dll) $args
