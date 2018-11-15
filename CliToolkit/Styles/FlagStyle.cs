@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CliToolkit.Arguments.Styles
+namespace CliToolkit.Styles
 {
     /// <summary>
     /// Controls a Flag argument's style for parsing.

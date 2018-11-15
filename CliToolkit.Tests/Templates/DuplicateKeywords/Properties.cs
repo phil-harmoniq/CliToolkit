@@ -1,5 +1,5 @@
 using CliToolkit.Arguments;
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Styles;
 
 namespace CliToolkit.Tests.Templates.DuplicateKeywords
 {

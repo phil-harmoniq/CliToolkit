@@ -1,7 +1,7 @@
 namespace CliToolkit.Exceptions
 {
     /// <summary>
-    /// Generic type for <see cref="CliApp" />
+    /// Generic type for <see cref="CliApp" /> exceptions
     /// </summary>
     [System.Serializable]
     public class AppException : System.Exception

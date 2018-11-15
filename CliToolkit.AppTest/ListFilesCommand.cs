@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using CliToolkit.Arguments;
-using CliToolkit.Exceptions;
 
 namespace CliToolkit.AppTest
 {

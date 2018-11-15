@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Styles;
 using CliToolkit.Core;
 using CliToolkit.Exceptions;
-using CliToolkit.Meta;
+using CliToolkit.Arguments;
 
-namespace CliToolkit.Arguments
+namespace CliToolkit.Core
 {
     internal class HelpMenu : Argument, ICommand
     {
@@ -13,6 +13,8 @@ namespace CliToolkit.Arguments
 
         internal string ShortKeyword { get; }
         internal ICommand Parent { get; private set; }
+
+        public AppInfo AppInfo => throw new NotImplementedException();
 
         internal HelpMenu(string description, string keyword, string shortKeyword) : base(description, keyword)
         {
