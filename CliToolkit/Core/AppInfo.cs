@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace CliToolkit.Meta
+namespace CliToolkit.Core
 {
     /// <summary>
     /// Information about this application and its runtime environment.

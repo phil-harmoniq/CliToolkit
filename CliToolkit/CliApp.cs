@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using CliToolkit.Arguments;
 using CliToolkit.Exceptions;
-using CliToolkit.Meta;
 using CliToolkit.Core;
 
 namespace CliToolkit
@@ -14,10 +13,12 @@ namespace CliToolkit
     /// </summary>
     public abstract class CliApp : ICommand
     {
+        internal HelpMenu HelpMenu { get; }
+
         /// <summary>
         /// Contains meta-data about this application and its environment.
         /// </summary>
-        public AppInfo AppInfo { get; } = new AppInfo();
+        public AppInfo AppInfo { get; }
 
         /// <summary>
         /// The exit code after running <see cref="OnExecute" />
@@ -25,13 +26,13 @@ namespace CliToolkit
         /// <value>Any non-zero value indicates an error during execution.</value>
         public int ExitCode { get; internal set; }
 
-        internal HelpMenu HelpMenu { get; } = new HelpMenu("Displays the available options for this command.", "help", "h");
-
         /// <summary>
         /// Constructs a new <see cref="CliApp" /> instance. This should not be called directly.
         /// </summary>
         protected CliApp()
         {
+            AppInfo = new AppInfo();
+            HelpMenu = new HelpMenu("Displays the available options for this command.", "help", "h");
         }
 
         /// <summary>

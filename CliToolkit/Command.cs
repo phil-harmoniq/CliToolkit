@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
+using CliToolkit.Arguments;
 using CliToolkit.Core;
 using CliToolkit.Exceptions;
-using CliToolkit.Meta;
 
-namespace CliToolkit.Arguments
+namespace CliToolkit
 {
     /// <summary>
     /// Generic type for a CLI command.
@@ -13,17 +13,12 @@ namespace CliToolkit.Arguments
     {
         private bool _parentIsCliApp = false;
 
-        internal HelpMenu HelpMenu { get; } = new HelpMenu("Displays the available options for this command.", "help", "h");
+        internal HelpMenu HelpMenu { get; }
 
         /// <summary>
-        /// Creates a new strongly-typed CLI command.
+        /// Contains meta-data about this application and its environment.
         /// </summary>
-        /// <param name="description">The text description that will be displayed in the help menu</param>
-        /// <param name="keyword">The keyword that will trigger this command's execution.</param>
-        /// <returns></returns>
-        protected Command(string description, string keyword) : base(description, keyword)
-        {
-        }
+        public AppInfo AppInfo { get; }
 
         /// <summary>
         /// A reference to the upper-level CliApp or Command that contains this Command.
@@ -35,6 +30,18 @@ namespace CliToolkit.Arguments
         /// </summary>
         /// <param name="args">The arguments passed to this command.</param>
         public abstract void OnExecute(string[] args);
+
+        /// <summary>
+        /// Creates a new strongly-typed CLI command.
+        /// </summary>
+        /// <param name="description">The text description that will be displayed in the help menu</param>
+        /// <param name="keyword">The keyword that will trigger this command's execution.</param>
+        /// <returns></returns>
+        protected Command(string description, string keyword) : base(description, keyword)
+        {
+            AppInfo = new AppInfo();
+            HelpMenu = new HelpMenu("Displays the available options for this command.", "help", "h");
+        }
 
         /// <summary>
         /// Prints the app header. The footer will also be printed after execution is complete.

@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.Serialization;
+using CliToolkit.Exceptions;
 
-namespace CliToolkit.Exceptions
+namespace CliToolkit
 {
     /// <summary>
     /// Thrown when the method <see cref="CliApp.OnExecute" /> fails during runtime.

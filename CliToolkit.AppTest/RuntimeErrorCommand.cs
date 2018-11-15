@@ -1,6 +1,4 @@
 using System;
-using CliToolkit.Arguments;
-using CliToolkit.Exceptions;
 
 namespace CliToolkit.AppTest
 {

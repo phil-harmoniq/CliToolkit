@@ -1,6 +1,7 @@
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Arguments;
+using CliToolkit.Styles;
 
-namespace CliToolkit.Arguments
+namespace CliToolkit
 {
     /// <summary>
     /// A strongly-typed command line Flag argument that records if it was triggered.

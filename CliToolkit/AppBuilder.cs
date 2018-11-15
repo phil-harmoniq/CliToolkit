@@ -1,5 +1,5 @@
 using CliToolkit.Exceptions;
-using CliToolkit.Meta;
+using CliToolkit.Core;
 
 namespace CliToolkit
 {

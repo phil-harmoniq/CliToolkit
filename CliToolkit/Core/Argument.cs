@@ -1,4 +1,5 @@
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Core;
+using CliToolkit.Styles;
 
 namespace CliToolkit.Arguments
 {

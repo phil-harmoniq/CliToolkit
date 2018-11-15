@@ -1,5 +1,5 @@
 using CliToolkit.Arguments;
-using CliToolkit.Meta;
+using CliToolkit.Core;
 
 namespace CliToolkit.Core
 {
@@ -8,6 +8,8 @@ namespace CliToolkit.Core
     /// </summary>
     public interface ICommand
     {
+        AppInfo AppInfo { get; }
+        
         /// <summary>
         /// Defines the behaviour when this command is triggered.
         /// </summary>

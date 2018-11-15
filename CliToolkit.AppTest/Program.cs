@@ -1,5 +1,3 @@
-using CliToolkit.Arguments;
-
 namespace CliToolkit.AppTest
 {
     class Program : CliApp

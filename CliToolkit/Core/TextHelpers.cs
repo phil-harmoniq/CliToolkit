@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Reflection;
 using CliToolkit.Arguments;
-using CliToolkit.Meta;
 
 namespace CliToolkit.Core
 {

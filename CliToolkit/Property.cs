@@ -1,8 +1,9 @@
 using System;
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Styles;
 using CliToolkit.Exceptions;
+using CliToolkit.Arguments;
 
-namespace CliToolkit.Arguments
+namespace CliToolkit
 {
     /// <summary>
     /// A strongly-typed command line Property argument that stores a value.
