@@ -1,15 +1,19 @@
 using System;
-using CliToolkit.Arguments.Styles;
+using CliToolkit.Styles;
 using CliToolkit.Exceptions;
+using CliToolkit.Arguments;
 
-namespace CliToolkit.Arguments
+namespace CliToolkit
 {
     /// <summary>
     /// A strongly-typed command line Property argument that stores a value.
     /// </summary>
     public sealed class Property : Argument
     {
-        private readonly PropertyStyle _style;
+        /// <summary>
+        /// A single letter that will also trigger this property. This value is optional.
+        /// </summary>
+        public string ShortKeyword { get; private set; }
 
         /// <summary>
         /// The property value captured by this argument if triggered.
@@ -24,15 +28,16 @@ namespace CliToolkit.Arguments
         /// <param name="shortKeyword">An optional single character that will also trigger this Property argument.</param>
         /// <param name="style">Sets the particular argument style to be used to parse this Property argument.</param>
         public Property(string description, string keyword, char? shortKeyword = null, PropertyStyle style = null)
-            : base(description, keyword, shortKeyword)
+            : base(description, keyword)
         {
+            if (shortKeyword != null) { ShortKeyword = shortKeyword.ToString(); }
             if (style == null) { style = PropertyStyle.DoubleDash; }
-            _style = style;
+            Style = style;
         }
 
         internal override int IsMatchingKeyword(string[] args)
         {
-            switch (_style)
+            switch (Style)
             {
                 case PropertyStyle.DoubleDashValue:
                     return ParseDoubleDashStyleArg(args[0], args[1]);

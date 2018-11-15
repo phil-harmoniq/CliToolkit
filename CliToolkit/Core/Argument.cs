@@ -1,3 +1,6 @@
+using CliToolkit.Core;
+using CliToolkit.Styles;
+
 namespace CliToolkit.Arguments
 {
     /// <summary>
@@ -5,6 +8,8 @@ namespace CliToolkit.Arguments
     /// </summary>
     public abstract class Argument
     {
+        internal Style Style { get; set; }
+
         /// <summary>
         /// Describes the purpose of this command-line argument.
         /// </summary>
@@ -13,23 +18,17 @@ namespace CliToolkit.Arguments
         /// <summary>
         /// The keyword that triggers this argument. This value is required.
         /// </summary>
-        public string Keyword { get; protected set; } 
-
-        /// <summary>
-        /// A single letter that will also trigger this argument. This value is optional.
-        /// </summary>
-        public string ShortKeyword { get; protected set; }
+        public string Keyword { get; protected set; }
 
         /// <summary>
         /// True if this command-line argument has been triggered.
         /// </summary>
         public bool IsActive { get; protected set; }
 
-        internal Argument(string description, string keyword, char? shortKeyword = null)
+        internal Argument(string description, string keyword)
         {
             Description = description;
             Keyword = keyword;
-            ShortKeyword = shortKeyword.ToString();
         }
 
         internal abstract int IsMatchingKeyword(string[] args);

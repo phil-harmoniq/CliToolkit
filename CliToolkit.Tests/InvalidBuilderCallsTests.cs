@@ -2,36 +2,36 @@ using CliToolkit.Exceptions;
 using CliToolkit.Tests.Templates;
 using Xunit;
 
-namespace CliToolkit.Tests.ConfigurationExceptions
+namespace CliToolkit.Tests
 {
     public class InvalidBuilderCallsTests
     {
         [Fact]
-        public void EmptyNameStringThrowsAppConfigurationException()
+        public void EmptyNameString_ShouldThrowAppConfigurationException()
         {
             var builder = new AppBuilder<ValidApp>();
             Assert.Throws<AppConfigurationException>(() => builder.SetName(""));
         }
 
         [Fact]
-        public void EmptyVersionStringThrowsAppConfigurationException()
+        public void EmptyVersionString_ShouldThrowAppConfigurationException()
         {
             var builder = new AppBuilder<ValidApp>();
             Assert.Throws<AppConfigurationException>(() => builder.SetVersion(""));
         }
 
         [Fact]
-        public void EmptyHeaderStringThrowsAppConfigurationException()
+        public void WidthSmallerThanMinimum_ShouldThrowAppConfigurationException()
         {
             var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader(""));
+            Assert.Throws<AppConfigurationException>(() => builder.SetWidth(12));
         }
 
         [Fact]
-        public void EmptyFooterStringThrowsAppConfigurationException()
+        public void WidthLargerThanMaximum_ShouldThrowAppConfigurationException()
         {
             var builder = new AppBuilder<ValidApp>();
-            Assert.Throws<AppConfigurationException>(() => builder.SetHeader("Non-empty header", ""));
+            Assert.Throws<AppConfigurationException>(() => builder.SetWidth(256));
         }
     }
 }

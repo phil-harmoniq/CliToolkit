@@ -1,7 +1,7 @@
 namespace CliToolkit.Exceptions
 {
     /// <summary>
-    /// Thrown when the configuration of the CLI application is invalid.
+    /// Thrown when invalid input for properties are detected.
     /// </summary>
     [System.Serializable]
     internal sealed class InvalidPropertyException : AppRuntimeException

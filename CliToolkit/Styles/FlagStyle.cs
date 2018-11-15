@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CliToolkit.Arguments.Styles
+namespace CliToolkit.Styles
 {
     /// <summary>
     /// Controls a Flag argument's style for parsing.
@@ -29,7 +29,7 @@ namespace CliToolkit.Arguments.Styles
         /// Use a forward slash before a keyword to trigger it. A forward slash is also used for short keywords
         /// </summary>
         /// <example>Example: /keyword or /k</example>
-        public static readonly FlagStyle MsBuild = new FlagStyle(SingleDashValue);
+        public static readonly FlagStyle MsBuild = new FlagStyle(MsBuildValue);
 
         private FlagStyle(string style) : base(style, new string[] { DoubleDashValue, SingleDashValue, MsBuildValue }) {}
 
@@ -47,6 +47,38 @@ namespace CliToolkit.Arguments.Styles
         public bool Equals(FlagStyle style)
         {
             return Value == style.Value;
+        }
+
+        internal override string GetPrefix(bool isShortValue)
+        {
+            if (isShortValue)
+            {
+                switch (Value)
+                {
+                    case FlagStyle.DoubleDashValue:
+                        return "-";
+                    case FlagStyle.SingleDashValue:
+                        return "-";
+                    case FlagStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
+            else
+            {
+                switch (Value)
+                {
+                    case FlagStyle.DoubleDashValue:
+                        return "--";
+                    case FlagStyle.SingleDashValue:
+                        return "-";
+                    case FlagStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
         }
     }
 }

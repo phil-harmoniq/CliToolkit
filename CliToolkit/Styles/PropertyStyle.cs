@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CliToolkit.Arguments.Styles
+namespace CliToolkit.Styles
 {
     /// <summary>
     /// Controls a Property argument's style for parsing.
@@ -61,6 +61,46 @@ namespace CliToolkit.Arguments.Styles
         public bool Equals(PropertyStyle propertyStyle)
         {
             return Value == propertyStyle.Value;
+        }
+
+        internal override string GetPrefix(bool isShortValue)
+        {
+            if (isShortValue)
+            {
+                switch (Value)
+                {
+                    case PropertyStyle.DoubleDashValue:
+                        return "-";
+                    case PropertyStyle.DoubleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.SingleDashValue:
+                        return "-";
+                    case PropertyStyle.SingleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
+            else
+            {
+                switch (Value)
+                {
+                    case PropertyStyle.DoubleDashValue:
+                        return "--";
+                    case PropertyStyle.DoubleDashWithEqualValue:
+                        return "--";
+                    case PropertyStyle.SingleDashValue:
+                        return "-";
+                    case PropertyStyle.SingleDashWithEqualValue:
+                        return "-";
+                    case PropertyStyle.MsBuildValue:
+                        return "/";
+                    default:
+                        return "--";
+                }
+            }
         }
     }
 }

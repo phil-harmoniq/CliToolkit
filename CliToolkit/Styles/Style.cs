@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CliToolkit.Arguments.Styles
+namespace CliToolkit.Styles
 {
     /// <summary>
     /// A generic argument style type.
@@ -14,6 +14,8 @@ namespace CliToolkit.Arguments.Styles
         /// </summary>
         protected readonly string Value;
         private static IReadOnlyCollection<string> _validValues;
+
+        internal abstract string GetPrefix(bool isShortValue);
 
         internal Style(string style, string[] validValues)
         {
