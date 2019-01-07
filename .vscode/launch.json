@@ -8,11 +8,11 @@
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "Build AppTest",
+            "preLaunchTask": "Build Example",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/CliToolkit.AppTest/bin/Debug/netcoreapp2.1/CliToolkit.AppTest.dll",
+            "program": "${workspaceFolder}/CliToolkit.Example/bin/Debug/netcoreapp2.1/CliToolkit.Example.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/CliToolkit.AppTest",
+            "cwd": "${workspaceFolder}/CliToolkit.Example",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,

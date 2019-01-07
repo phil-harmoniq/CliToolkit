@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit.Tests", "CliTool
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit", "CliToolkit\CliToolkit.csproj", "{BAC86440-0698-40EB-811E-7E361F4D9A81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit.AppTest", "CliToolkit.AppTest\CliToolkit.AppTest.csproj", "{456B54F9-6B2A-4DCF-A005-19BB61C15F62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit.Example", "CliToolkit.Example\CliToolkit.Example.csproj", "{456B54F9-6B2A-4DCF-A005-19BB61C15F62}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

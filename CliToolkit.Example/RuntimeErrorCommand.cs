@@ -1,6 +1,6 @@
 using System;
 
-namespace CliToolkit.AppTest
+namespace CliToolkit.Example
 {
     public class RuntimeErrorCommand : Command
     {
