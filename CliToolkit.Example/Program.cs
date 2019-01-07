@@ -1,6 +1,6 @@
-namespace CliToolkit.AppTest
+namespace CliToolkit.Example
 {
-    class Program : CliApp
+    public class Program : CliApp
     {
         static int Main(string[] args)
         {
@@ -9,6 +9,7 @@ namespace CliToolkit.AppTest
             return app.ExitCode;
         }
 
+        public Command HelloWorld = new HelloWorldCommand("Say hello world", "hello-world");
         public Command ListFiles = new ListFilesCommand("List files in the given directory", "list");
         public Command ThrowError = new RuntimeErrorCommand("Throws a runtime error but exits gracefully", "error");
 
