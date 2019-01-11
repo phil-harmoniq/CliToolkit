@@ -14,8 +14,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <CiBuildNumber></CiBuildNumber>
-    <VersionSuffix Condition=" '$(CiBuildNumber)' != '' And '$(VersionSuffix)' != '' ">$(VersionSuffix)-ci$(CiBuildNumber)</VersionSuffix>
+    <CiBuildNumber>$(Build.BuildNumber)</CiBuildNumber>
+    <VersionSuffix Condition=" '$(CiBuildNumber)' != '' ">$(VersionSuffix)-ci$(CiBuildNumber)</VersionSuffix>
   </PropertyGroup>
 
 </Project>
