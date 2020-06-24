@@ -23,12 +23,14 @@ namespace CliToolkit
         public TApp Build()
         {
             _app.Configuration = _configBuilder.Build();
+            _app.ServiceCollection = _serviceCollection;
             return _app;
         }
 
         public TApp Start(string[] args)
         {
-            _app.Parse(_serviceCollection, _configBuilder.Build(), args);
+            Build();
+            _app.Start(args);
             return _app;
         }
         

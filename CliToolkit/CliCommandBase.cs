@@ -14,19 +14,8 @@ namespace CliToolkit
         {
             if (args.Length > 0)
             {
-                var arg = args[0];
+                var subCommandProperty = FindMatchingSubCommand(args);
                 var argsTrim = args.Skip(1).ToArray();
-                var type = GetType();
-                var properties = type.GetProperties();
-
-                var commandProperties = properties.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommandBase)));
-
-                var subCommandProperty = commandProperties.FirstOrDefault(p =>
-                {
-                    var t = p.PropertyType;
-                    var attribute = t.GetCustomAttribute<CliCommandRouteAttribute>();
-                    return attribute?.Keyword == arg || attribute?.AlternateKeyword == arg;
-                });
 
                 if (subCommandProperty != null)
                 {
@@ -52,6 +41,20 @@ namespace CliToolkit
             {
                 Finish(config, args);
             }
+        }
+
+        private PropertyInfo FindMatchingSubCommand(string[] args)
+        {
+            return GetType()
+                .GetProperties()
+                .Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommandBase)))
+                .FirstOrDefault(p =>
+                {
+                    var arg = args[0];
+                    var t = p.PropertyType;
+                    var attribute = t.GetCustomAttribute<CliCommandRouteAttribute>();
+                    return attribute?.Keyword == arg || attribute?.AlternateKeyword == arg;
+                });
         }
     }
 }
