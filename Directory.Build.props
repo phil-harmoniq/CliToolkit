@@ -1,20 +1,25 @@
 <Project>
- 
+
   <PropertyGroup>
-    <Authors>Phil Hawkins</Authors>
-    <VersionPrefix>0.2.2</VersionPrefix>
-    <Copyright>MIT</Copyright>
-    <Description></Description>
-    <PackageProjectUrl>https://phil-harmoniq.github.io/projects/CliToolkit</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
-    <PackageLicenseUrl>https://github.com/phil-harmoniq/CliToolkit/blob/master/LICENSE.md</PackageLicenseUrl>
-    <PackageIconUrl></PackageIconUrl>
-    <PackageTags></PackageTags>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <MajorVersion>0</MajorVersion>
+    <MinorVersion>3</MinorVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <VersionSuffix Condition=" '$(BUILD_BUILDNUMBER)' != '' ">ci$(BUILD_BUILDNUMBER)</VersionSuffix>
+    <Authors>Phil Hawkins</Authors>
+    <Copyright>MIT</Copyright>
+    <Description></Description>
+    <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <PackageTags></PackageTags>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>$(MajorVersion).$(MinorVersion)</VersionPrefix>
+    <VersionPrefix Condition=" '$(BUILD_BUILDID)' != '' ">$(VersionPrefix).$(BUILD_BUILDID)</VersionPrefix>
+    <VersionSuffix Condition=" '$(BUILD_SOURCEBRANCHNAME)' != 'master' ">dev</VersionSuffix>
   </PropertyGroup>
 
 </Project>

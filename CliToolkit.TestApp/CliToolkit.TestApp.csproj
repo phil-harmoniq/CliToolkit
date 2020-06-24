@@ -2,10 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <IsPackable>false</IsPackable>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AnsiCodes" Version="0.2.1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CliToolkit\CliToolkit.csproj" />
