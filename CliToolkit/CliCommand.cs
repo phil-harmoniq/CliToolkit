@@ -1,163 +1,220 @@
-﻿using AnsiCodes;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace CliToolkit
 {
     public abstract class CliCommand
     {
-        // https://stackoverflow.com/a/4489046
-        private static readonly Regex _regex = new Regex(
-            @"(?<=[A-Z])(?=[A-Z][a-z]) | (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
-            RegexOptions.IgnorePatternWhitespace);
-        private string KebabConvert(string str) => _regex.Replace(TrimCommandSuffix(str), "-");
-        protected abstract void OnExecute(string[] args);
-
-        internal Type Type { get; private set; }
-        internal IList<PropertyInfo> ConfigurationProperties { get; private set; }
-        internal IList<PropertyInfo> CommandProperties { get; private set; }
-        internal string ParsedName { get; set; }
-
         private const int _menuPadLength = 4;
         private readonly string _menuPad = new string(' ', _menuPadLength);
 
         private IServiceProvider _serviceProvider;
+        private IList<PropertyInfo> _configurationProperties;
+        private IList<PropertyInfo> _commandProperties;
+        private CliNamespaceAttribute _namespaceAttribute;
+        private CliCommand _parent;
+        private CliApp _applicationRoot;
+        private Type _type;
 
-        public virtual void PrintHelpMenu()
-        {
-            PrintInformation();
-        }
+        internal string CommandName { get; private set; }
+        internal string KebabAlias { get; private set; }
+        internal bool IsApplicationRoot { get; private set; }
 
-        private void PrintInformation()
+        protected abstract void OnExecute(string[] args);
+
+        public void PrintHelpMenu()
         {
             Console.WriteLine();
 
-            if (CommandProperties.Count > 0)
+            var rootAttr = _type.GetCustomAttribute<CliDescriptionAttribute>();
+
+            if (rootAttr != null)
+            {
+                Console.WriteLine("  " + rootAttr.Description + Environment.NewLine);
+            }
+
+            if (_commandProperties.Count > 0)
             {
                 Console.WriteLine("  Commands:");
 
-                foreach (var prop in CommandProperties)
+                foreach (var prop in _commandProperties)
                 {
                     var attr = prop.GetCustomAttribute<CliDescriptionAttribute>();
 
                     if (attr != null)
                     {
-                        WriteLineWithPad($"{KebabConvert(prop.Name).ToLower()}    {attr.Description}");
+                        Console.WriteLine($"{_menuPad}{TextHelper.KebabConvert(prop.Name).ToLower()}    {attr.Description}");
                     }
                     else
                     {
-                        WriteLineWithPad(KebabConvert(prop.Name).ToLower());
+                        Console.WriteLine($"{_menuPad}{TextHelper.KebabConvert(prop.Name).ToLower()}");
                     }
                 }
+
+                Console.WriteLine();
             }
 
-            if (ConfigurationProperties.Count > 0)
+            if (_configurationProperties.Count > 0)
             {
-                Console.WriteLine($"{Environment.NewLine}  Options:");
+                Console.WriteLine("Options:");
 
-                foreach (var prop in ConfigurationProperties)
+                foreach (var prop in _configurationProperties)
                 {
                     var attr = prop.GetCustomAttribute<CliDescriptionAttribute>();
 
                     if (attr != null)
                     {
-                        WriteLineWithPad($"--{KebabConvert(prop.Name).ToLower()}    {attr.Description}");
+                        Console.WriteLine($"{_menuPad}{TextHelper.KebabConvert(prop.Name).ToLower()}    {attr.Description}");
                     }
                     else
                     {
-                        WriteLineWithPad($"--{KebabConvert(prop.Name).ToLower()}");
+                        Console.WriteLine($"{_menuPad}{TextHelper.KebabConvert(prop.Name).ToLower()}");
                     }
                 }
+
+                Console.WriteLine();
             }
-
-            Console.WriteLine();
         }
 
-        private void WriteLineWithPad(string str)
+        internal void Parse(CliCommand caller, string[] args)
         {
-            Console.WriteLine(_menuPad + str);
-        }
-
-        internal void Parse(IServiceCollection services, IConfiguration config, string[] args)
-        {
-            _serviceProvider = services.BuildServiceProvider();
-
+            _parent = caller;
             Reflect();
 
             if (args.Length > 0)
             {
-                var subCommandProperty = FindMatchingSubCommand(args);
+                var subCommandProp = FindMatchingSubCommand(args[0]);
 
-                if (subCommandProperty != null)
+                if (subCommandProp != null)
                 {
-                    services.AddSingleton(subCommandProperty.PropertyType);
-                    _serviceProvider = services.BuildServiceProvider();
+                    _applicationRoot.AppInfo.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
+                    _serviceProvider = _applicationRoot.AppInfo.ServiceCollection.BuildServiceProvider();
 
-                    if (!subCommandProperty.CanWrite)
+                    if (!subCommandProp.CanWrite)
                     {
-                        throw new Exception($"Property {subCommandProperty} must have a public setter for injection.");
+                        throw new Exception($"Property {subCommandProp} must have a public setter for injection.");
                     }
 
-                    subCommandProperty.SetValue(this, _serviceProvider.GetRequiredService(subCommandProperty.PropertyType));
-                    var val = subCommandProperty.GetValue(this, null);
+                    subCommandProp.SetValue(this, _serviceProvider.GetRequiredService(subCommandProp.PropertyType));
+                    var val = subCommandProp.GetValue(this, null);
                     var subCommand = (CliCommand)val;
-                    subCommand.Parse(services, config, args.Skip(1).ToArray());
+                    subCommand.Parse(this, args.Skip(1).ToArray());
+                }
+                else
+                {
+                    InjectProperties(args);
                 }
             }
             else
             {
-                InjectProperties(config, args);
+                InjectProperties(args);
             }
+        }
+
+        internal string GetNamespace()
+        {
+            if (IsApplicationRoot && _namespaceAttribute != null)
+            {
+                return CommandName;
+            }
+            if (IsApplicationRoot)
+            {
+                return "";
+            }
+
+            return string.Join(":", new[] { _parent.GetNamespace(), CommandName }
+                .Where(s => !string.IsNullOrEmpty(s)));
+        }
+
+        internal CliApp GetApplicationRoot()
+        {
+            if (IsApplicationRoot)
+            {
+                var obj = this;
+                return (CliApp)obj;
+            }
+            return _parent.GetApplicationRoot();
         }
 
         private void Reflect()
         {
-            Type = GetType();
+            if (GetType().IsSubclassOf(typeof(CliApp)))
+            {
+                IsApplicationRoot = true;
+            }
 
-            var restrictedProps = Type.IsSubclassOf(typeof(CliApp))
+            _type = GetType();
+            _applicationRoot = GetApplicationRoot();
+
+            var restrictedProps = IsApplicationRoot
                 ? typeof(CliApp).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => p.Name)
                 : new string[0];
 
-            var currentProps = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            var currentProps = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => !restrictedProps.Contains(p.Name));
 
-            ConfigurationProperties = currentProps.Where(p =>
+            _configurationProperties = currentProps.Where(p =>
                 p.PropertyType == typeof(string)
                 || p.PropertyType == typeof(int)
                 || p.PropertyType == typeof(bool))
                 .ToList();
 
-            CommandProperties = currentProps.Where(p =>
+            _commandProperties = currentProps.Where(p =>
                 p.PropertyType.IsSubclassOf(typeof(CliCommand)))
                 .ToList();
 
-            ParsedName = Type.Name.EndsWith("Command")
-                ? Type.Name.Substring(0, Type.Name.Length - 7)
-                : Type.Name;
+            _namespaceAttribute = _type.GetCustomAttribute<CliNamespaceAttribute>();
+
+            if (_namespaceAttribute == null)
+            {
+                CommandName = TextHelper.TrimCommandSuffix(_type.Name);
+                KebabAlias = TextHelper.KebabConvert(_type.Name);
+            }
+            else
+            {
+                CommandName = TextHelper.TrimCommandSuffix(_namespaceAttribute.Namespace);
+                KebabAlias = TextHelper.KebabConvert(_namespaceAttribute.Namespace);
+            }
         }
 
-        private void InjectProperties(IConfiguration config, string[] args)
+        private void InjectProperties(string[] args)
         {
-            if (ConfigurationProperties.Count > 0)
+            var name = GetNamespace();
+            if (_configurationProperties.Count > 0)
             {
                 var switchMaps = GetSwitchMaps();
                 var newConfig = new ConfigurationBuilder()
-                    .AddConfiguration(config)
+                    .AddConfiguration(_applicationRoot.AppInfo.Configuration)
                     .AddCommandLine(args, switchMaps)
                     .Build();
 
-                var namespaceAttr = Type.GetCustomAttribute<CliNamespaceAttribute>();
+                IConfiguration section;
 
-                var section = newConfig.GetSection(namespaceAttr == null
-                    ? Type.Name
-                    : namespaceAttr.Namespace);
+                if (_namespaceAttribute == null)
+                {
+                    if (IsApplicationRoot)
+                    {
+                        section = newConfig;
+                    }
+                    else
+                    {
+                        section = newConfig.GetSection(_type.Name);
+                    }
+                }
+                else if (string.IsNullOrEmpty(_namespaceAttribute.Namespace))
+                {
+                    section = newConfig;
+                }
+                else
+                {
+                    section = newConfig.GetSection(_namespaceAttribute.Namespace);
+                }
 
-                foreach (var prop in ConfigurationProperties)
+                foreach (var prop in _configurationProperties)
                 {
                     var value = section[prop.Name];
                     if (!string.IsNullOrEmpty(value))
@@ -183,58 +240,32 @@ namespace CliToolkit
 
         private Dictionary<string, string> GetSwitchMaps()
         {
-            var baseName = Type.Name;
             var switchMaps = new Dictionary<string, string>();
-
-            foreach (var prop in ConfigurationProperties)
+            foreach (var prop in _configurationProperties)
             {
-                var kebabCase = KebabConvert(prop.Name);
-                var menuAttribute = prop.GetCustomAttribute<CliDescriptionAttribute>();
-                switchMaps.Add($"--{prop.Name}", $"{baseName}:{prop.Name}");
-
-                if (kebabCase != prop.Name)
-                {
-                    switchMaps.Add($"--{kebabCase}", $"{baseName}:{prop.Name}");
-                }
-
-                if (menuAttribute != null && menuAttribute.ShortFlag != default(char))
-                {
-                    switchMaps.Add($"-{menuAttribute.ShortFlag}", $"{baseName}:{prop.Name}");
-                }
+                switchMaps.Add($"--{prop.Name}", $"{GetNamespace()}:{prop.Name}");
+                switchMaps.Add($"--{TextHelper.KebabConvert(prop.Name)}", $"{GetNamespace()}:{prop.Name}");
             }
-
             return switchMaps;
         }
 
-        private PropertyInfo FindMatchingSubCommand(string[] args)
+        private PropertyInfo FindMatchingSubCommand(string arg)
         {
-            return CommandProperties.FirstOrDefault(p =>
+            return _commandProperties.FirstOrDefault(p =>
             {
-                var type = p.PropertyType;
-                var parsedName = TrimCommandSuffix(type.Name);
-                var kebabName = KebabConvert(parsedName);
-                var arg = args[0];
-                var attribute = p.GetCustomAttribute<CliDescriptionAttribute>();
-
-                if (arg.Equals(ParsedName, StringComparison.OrdinalIgnoreCase) ||
-                    arg.Equals(kebabName, StringComparison.OrdinalIgnoreCase))
+                var aliases = new List<string>
                 {
-                    return true;
-                }
-                if (attribute != null && attribute.ShortFlag != default(char) &&
-                    arg.Equals(attribute.ShortFlag.ToString(), StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-                return false;
+                    TextHelper.TrimCommandSuffix(p.Name),
+                    TextHelper.KebabConvert(p.Name)
+                };
+                return aliases.Contains(arg, new IgnoreCaseComparer());
             });
         }
 
-        private string TrimCommandSuffix(string name)
+        private class IgnoreCaseComparer : IEqualityComparer<string>
         {
-            return name.EndsWith("Command", StringComparison.OrdinalIgnoreCase)
-                ? name.Substring(0, name.Length - 7)
-                : name;
+            public bool Equals(string x, string y) => x.Equals(y, StringComparison.OrdinalIgnoreCase);
+            public int GetHashCode(string obj) => throw new NotImplementedException();
         }
     }
 }

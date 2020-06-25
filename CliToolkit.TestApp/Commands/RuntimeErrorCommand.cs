@@ -12,7 +12,7 @@ namespace CliToolkit.TestApp.Commands
         {
             if (!IgnoreErrorFlag)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
             Console.WriteLine("Ignoring error...");
         }

@@ -10,9 +10,9 @@ namespace CliToolkit.TestApp
             var app = new CliAppBuilder<ApplicationRoot>()
                 .SetName("CLI Test App")
                 .Configure(Configure)
-                //.RegisterServices(RegisterServices)
+                .RegisterServices(RegisterServices)
                 .Start(args);
-            return app.ExitCode;
+            return app.AppInfo.ExitCode;
         }
 
         private static void Configure(IConfigurationBuilder config)

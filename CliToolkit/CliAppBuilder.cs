@@ -21,27 +21,27 @@ namespace CliToolkit
             _app = new TApp();
             _serviceCollection = new ServiceCollection();
             _configBuilder = new ConfigurationBuilder();
-            _app.Width = _defaultWidth;
+            _app.AppInfo.Width = _defaultWidth;
         }
 
         public TApp Build()
         {
             var assembly = Assembly.GetEntryAssembly();
 
-            if (string.IsNullOrEmpty(_app.Version))
+            if (string.IsNullOrEmpty(_app.AppInfo.Version))
             {
                 var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _app.Version = fvi.ProductVersion;
+                _app.AppInfo.Version = fvi.ProductVersion;
             }
 
-            if (string.IsNullOrEmpty(_app.Name))
+            if (string.IsNullOrEmpty(_app.AppInfo.Name))
             {
-                _app.Name = assembly.GetName().Name;
+                _app.AppInfo.Name = assembly.GetName().Name;
             }
 
-            _app.Configuration = _configBuilder.Build();
-            _app.ServiceCollection = _serviceCollection;
-            _app.ServiceCollection.AddSingleton<CliApp>(_app);
+            _app.AppInfo.Configuration = _configBuilder.Build();
+            _app.AppInfo.ServiceCollection = _serviceCollection;
+            _app.AppInfo.ServiceCollection.AddSingleton<CliApp>(_app);
 
             return _app;
         }
@@ -68,14 +68,14 @@ namespace CliToolkit
         public CliAppBuilder<TApp> SetName(string name)
         {
             if (string.IsNullOrEmpty(name)) { throw new Exception("SetName() was called with an empty string."); }
-            _app.Name = name;
+            _app.AppInfo.Name = name;
             return this;
         }
 
         public CliAppBuilder<TApp> SetVersion(string version)
         {
             if (string.IsNullOrEmpty(version)) { throw new Exception("SetVersion() was called with an empty string."); }
-            _app.Version = version;
+            _app.AppInfo.Version = version;
             return this;
         }
 
@@ -90,7 +90,7 @@ namespace CliToolkit
                 throw new Exception($"Given width {width} is smaller than the minimum width {_minimumWidth}");
             }
 
-            _app.Width = width;
+            _app.AppInfo.Width = width;
             return this;
         }
     }
@@ -113,13 +113,13 @@ namespace CliToolkit
 
     //    public TApp Build()
     //    {
-    //        _app.Configuration = _configBuilder.Build();
+    //        _app.AppInfo.Configuration = _configBuilder.Build();
     //        return _app;
     //    }
 
     //    public TApp Start(string[] args)
     //    {
-    //        _app.Parse(_serviceCollection, _configBuilder.Build(), args);
+    //        _app.AppInfo.Parse(_serviceCollection, _configBuilder.Build(), args);
     //        return _app;
     //    }
 
@@ -132,14 +132,14 @@ namespace CliToolkit
     //    public CliAppBuilder<TApp, TOptions> SetName(string name)
     //    {
     //        if (string.IsNullOrEmpty(name)) { throw new Exception("SetName() was called with an empty string."); }
-    //        _app.Name = name;
+    //        _app.AppInfo.Name = name;
     //        return this;
     //    }
 
     //    public CliAppBuilder<TApp, TOptions> SetVersion(string version)
     //    {
     //        if (string.IsNullOrEmpty(version)) { throw new Exception("SetVersion() was called with an empty string."); }
-    //        _app.Version = version;
+    //        _app.AppInfo.Version = version;
     //        return this;
     //    }
 
@@ -154,7 +154,7 @@ namespace CliToolkit
     //            throw new Exception($"Given width {width} is smaller than the minimum width {_minimumWidth}");
     //        }
 
-    //        _app.Width = width;
+    //        _app.AppInfo.Width = width;
     //        return this;
     //    }
     //}

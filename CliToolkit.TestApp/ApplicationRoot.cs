@@ -3,13 +3,17 @@ using System;
 
 namespace CliToolkit.TestApp
 {
+    [CliDescription("Test application for the CliToolkit library")]
     public class ApplicationRoot : CliApp
     {
         [CliDescription("Print hello world")]
-        public HelloWorldCommand HelloCommand { get; internal set; }
+        public HelloWorldCommand HelloCommand { get; set; }
 
         [CliDescription("Simulate a run-time error")]
-        public RuntimeErrorCommand ErrorCommand { get; internal set; }
+        public RuntimeErrorCommand ErrorCommand { get; set; }
+
+        [CliDescription("Example of common help paramater parsing")]
+        public DefaultHelpMenuCommand HelpMenuCommand { get; set; }
 
         [CliDescription("Give me a string!")]
         public string StringValue { get; set; }
@@ -23,7 +27,7 @@ namespace CliToolkit.TestApp
         protected override void OnExecute(string[] args)
         {
             PrintHelpMenu();
-            throw new Exception();
+            throw new Exception("");
         }
     }
 }
