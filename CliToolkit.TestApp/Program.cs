@@ -9,20 +9,11 @@ namespace CliToolkit.TestApp
         static int Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
+                .SetName("CLI Test App")
                 //.Configure(Configure)
                 //.RegisterServices(RegisterServices)
-                .Start(new string[] { "runtime-error", "--ignore-error-flag=true"} );
+                .Start(args);
             return app.ExitCode;
-        }
-
-        private static void Configure(IConfigurationBuilder obj)
-        {
-            throw new NotImplementedException();
-        }
-
-        private static void RegisterServices(IServiceCollection obj)
-        {
-            throw new NotImplementedException();
         }
     }
 }

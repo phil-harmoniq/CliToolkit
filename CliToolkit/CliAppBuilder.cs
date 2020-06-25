@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace CliToolkit
 {
@@ -8,6 +10,7 @@ namespace CliToolkit
     {
         private const int _minimumWidth = 32;
         private const int _maximumWidth = 128;
+        private const int _defaultWidth = 72;
 
         private TApp _app;
         private ServiceCollection _serviceCollection;
@@ -18,12 +21,28 @@ namespace CliToolkit
             _app = new TApp();
             _serviceCollection = new ServiceCollection();
             _configBuilder = new ConfigurationBuilder();
+            _app.Width = _defaultWidth;
         }
 
         public TApp Build()
         {
+            var assembly = Assembly.GetEntryAssembly();
+
+            if (string.IsNullOrEmpty(_app.Version))
+            {
+                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+                _app.Version = fvi.ProductVersion;
+            }
+
+            if (string.IsNullOrEmpty(_app.Name))
+            {
+                _app.Name = assembly.GetName().Name;
+            }
+
             _app.Configuration = _configBuilder.Build();
             _app.ServiceCollection = _serviceCollection;
+            _app.ServiceCollection.AddSingleton<CliApp>(_app);
+
             return _app;
         }
 
@@ -33,7 +52,7 @@ namespace CliToolkit
             _app.Start(args);
             return _app;
         }
-        
+
         public CliAppBuilder<TApp> Configure(Action<IConfigurationBuilder> configure)
         {
             configure(_configBuilder);

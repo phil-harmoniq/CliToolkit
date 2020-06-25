@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AnsiCodes;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,11 @@ namespace CliToolkit
 {
     public abstract class CliCommand
     {
-        private static readonly Regex KebabCaseRegex = new Regex(@"(?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+        // https://stackoverflow.com/a/4489046
+        private static readonly Regex _regex = new Regex(
+            @"(?<=[A-Z])(?=[A-Z][a-z]) | (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
+            RegexOptions.IgnorePatternWhitespace);
+        private string KebabConvert(string str) => _regex.Replace(TrimCommandSuffix(str), "-");
         protected abstract void OnExecute(string[] args);
 
         internal Type Type { get; private set; }
@@ -19,26 +23,71 @@ namespace CliToolkit
         internal IList<PropertyInfo> CommandProperties { get; private set; }
         internal string ParsedName { get; set; }
 
-        internal void Parse(IServiceCollection sc, IConfiguration config, string[] args)
+        private const int _menuPadLength = 4;
+        private readonly string _menuPad = new string(' ', _menuPadLength);
+
+        private IServiceProvider _serviceProvider;
+
+        public virtual void PrintHelpMenu()
         {
-            Type = GetType();
+            PrintInformation();
+        }
 
-            var restrictedProps = Type.IsSubclassOf(typeof(CliApp))
-                ? Type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => p.Name)
-                : new string[0];
+        private void PrintInformation()
+        {
+            Console.WriteLine();
 
-            var currentProps = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (CommandProperties.Count > 0)
+            {
+                Console.WriteLine("  Commands:");
 
-            ConfigurationProperties = currentProps.Where(p => !restrictedProps.Contains(p.Name)
-                || p.PropertyType == typeof(string) || p.PropertyType == typeof(int)
-                || p.PropertyType == typeof(bool)).ToList();
+                foreach (var prop in CommandProperties)
+                {
+                    var attr = prop.GetCustomAttribute<CliMenuAttribute>();
 
-            CommandProperties = currentProps.Where(p => !restrictedProps.Contains(p.Name)
-                || p.PropertyType.IsSubclassOf(typeof(CliCommand))).ToList();
+                    if (attr != null)
+                    {
+                        WriteLineWithPad($"{KebabConvert(prop.Name).ToLower()}    {attr.Description}");
+                    }
+                    else
+                    {
+                        WriteLineWithPad(KebabConvert(prop.Name).ToLower());
+                    }
+                }
+            }
 
-            ParsedName = Type.Name.EndsWith("Command")
-                ? Type.Name.Substring(0, Type.Name.Length - 7)
-                : Type.Name;
+            if (ConfigurationProperties.Count > 0)
+            {
+                Console.WriteLine($"{Environment.NewLine}  Options:");
+
+                foreach (var prop in ConfigurationProperties)
+                {
+                    var attr = prop.GetCustomAttribute<CliMenuAttribute>();
+
+                    if (attr != null)
+                    {
+                        WriteLineWithPad($"--{KebabConvert(prop.Name).ToLower()}    {attr.Description}");
+                    }
+                    else
+                    {
+                        WriteLineWithPad($"--{KebabConvert(prop.Name).ToLower()}");
+                    }
+                }
+            }
+
+            Console.WriteLine();
+        }
+
+        private void WriteLineWithPad(string str)
+        {
+            Console.WriteLine(_menuPad + str);
+        }
+
+        internal void Parse(IServiceCollection services, IConfiguration config, string[] args)
+        {
+            _serviceProvider = services.BuildServiceProvider();
+
+            Reflect();
 
             if (args.Length > 0)
             {
@@ -46,31 +95,53 @@ namespace CliToolkit
 
                 if (subCommandProperty != null)
                 {
-                    sc.AddSingleton(subCommandProperty.PropertyType);
-                    var sp = sc.BuildServiceProvider();
+                    services.AddSingleton(subCommandProperty.PropertyType);
+                    _serviceProvider = services.BuildServiceProvider();
 
                     if (!subCommandProperty.CanWrite)
                     {
                         throw new Exception($"Property {subCommandProperty} must have a public setter for injection.");
                     }
 
-                    subCommandProperty.SetValue(this, sp.GetRequiredService(subCommandProperty.PropertyType));
+                    subCommandProperty.SetValue(this, _serviceProvider.GetRequiredService(subCommandProperty.PropertyType));
                     var val = subCommandProperty.GetValue(this, null);
                     var subCommand = (CliCommand)val;
-                    subCommand.Parse(sc, config, args.Skip(1).ToArray());
-                }
-                else
-                {
-                    Finish(config, args);
+                    subCommand.Parse(services, config, args.Skip(1).ToArray());
                 }
             }
             else
             {
-                Finish(config, args);
+                InjectProperties(config, args);
             }
         }
 
-        private void Finish(IConfiguration config, string[] args)
+        private void Reflect()
+        {
+            Type = GetType();
+
+            var restrictedProps = Type.IsSubclassOf(typeof(CliApp))
+                ? typeof(CliApp).GetProperties(BindingFlags.Public | BindingFlags.Instance).Select(p => p.Name)
+                : new string[0];
+
+            var currentProps = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => !restrictedProps.Contains(p.Name));
+
+            ConfigurationProperties = currentProps.Where(p =>
+                p.PropertyType == typeof(string)
+                || p.PropertyType == typeof(int)
+                || p.PropertyType == typeof(bool))
+                .ToList();
+
+            CommandProperties = currentProps.Where(p =>
+                p.PropertyType.IsSubclassOf(typeof(CliCommand)))
+                .ToList();
+
+            ParsedName = Type.Name.EndsWith("Command")
+                ? Type.Name.Substring(0, Type.Name.Length - 7)
+                : Type.Name;
+        }
+
+        private void InjectProperties(IConfiguration config, string[] args)
         {
             if (ConfigurationProperties.Count > 0)
             {
@@ -106,11 +177,6 @@ namespace CliToolkit
             OnExecute(args);
         }
 
-        private string KebabConvert(string str)
-        {
-            return KebabCaseRegex.Replace(str, "-");
-        }
-
         private Dictionary<string, string> GetSwitchMaps()
         {
             var baseName = Type.Name;
@@ -141,9 +207,7 @@ namespace CliToolkit
             return CommandProperties.FirstOrDefault(p =>
             {
                 var type = p.PropertyType;
-                var parsedName = type.Name.EndsWith("Command")
-                    ? type.Name.Substring(0, type.Name.Length - 7)
-                    : type.Name;
+                var parsedName = TrimCommandSuffix(type.Name);
                 var kebabName = KebabConvert(parsedName);
                 var arg = args[0];
                 var attribute = p.GetCustomAttribute<CliMenuAttribute>();
@@ -161,26 +225,12 @@ namespace CliToolkit
                 return false;
             });
         }
+
+        private string TrimCommandSuffix(string name)
+        {
+            return name.EndsWith("Command", StringComparison.OrdinalIgnoreCase)
+                ? name.Substring(0, name.Length - 7)
+                : name;
+        }
     }
-
-    //public abstract class CliCommand<TOptions> : CliCommandBase where TOptions : class
-    //{
-    //    protected abstract void OnExecute(TOptions options, string[] args);
-
-    //    internal readonly Type OptionsType = typeof(TOptions);
-
-    //    internal override void Finish(IConfiguration config, string[] args)
-    //    {
-    //        var switchMaps = GetSwitchMaps(typeof(TOptions));
-    //        var newConfig = new ConfigurationBuilder()
-    //            .AddConfiguration(config)
-    //            .AddCommandLine(args, switchMaps)
-    //            .Build();
-
-    //        var section = newConfig.GetSection(OptionsType.Name);
-    //        var options = section.Get<TOptions>();
-
-    //        OnExecute(options, args);
-    //    }
-    //}
 }

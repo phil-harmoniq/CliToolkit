@@ -1,4 +1,5 @@
 ﻿using CliToolkit.TestApp.Commands;
+using System;
 
 namespace CliToolkit.TestApp
 {
@@ -10,9 +11,14 @@ namespace CliToolkit.TestApp
         [CliMenu("Simulate a run-time error")]
         public RuntimeErrorCommand RuntimeErrorCommand { get; internal set; }
 
+        public string StringValue { get; set; }
+        public int IntValue { get; set; }
+        public bool BoolValue { get; set; }
+
         protected override void OnExecute(string[] args)
         {
-            throw new System.NotImplementedException();
+            PrintHelpMenu();
+            throw new Exception();
         }
     }
 }
