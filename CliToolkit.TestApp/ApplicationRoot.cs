@@ -5,14 +5,19 @@ namespace CliToolkit.TestApp
 {
     public class ApplicationRoot : CliApp
     {
-        [CliMenu("Print hello world")]
-        public HelloWorldCommand HelloWorldCommand { get; internal set; }
+        [CliDescription("Print hello world")]
+        public HelloWorldCommand HelloCommand { get; internal set; }
 
-        [CliMenu("Simulate a run-time error")]
-        public RuntimeErrorCommand RuntimeErrorCommand { get; internal set; }
+        [CliDescription("Simulate a run-time error")]
+        public RuntimeErrorCommand ErrorCommand { get; internal set; }
 
+        [CliDescription("Give me a string!")]
         public string StringValue { get; set; }
+
+        [CliDescription("Give me an int!")]
         public int IntValue { get; set; }
+
+        [CliDescription("Give me a bool!")]
         public bool BoolValue { get; set; }
 
         protected override void OnExecute(string[] args)

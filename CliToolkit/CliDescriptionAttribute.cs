@@ -2,12 +2,12 @@
 
 namespace CliToolkit
 {
-    public class CliMenuAttribute : Attribute
+    public class CliDescriptionAttribute : Attribute
     {
         public string Description { get; }
         public char ShortFlag { get; }
 
-        public CliMenuAttribute(string description, char shortFlag = default)
+        public CliDescriptionAttribute(string description, char shortFlag = default)
         {
             Description = description;
             ShortFlag = shortFlag;

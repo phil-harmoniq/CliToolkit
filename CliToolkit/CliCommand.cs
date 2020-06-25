@@ -43,7 +43,7 @@ namespace CliToolkit
 
                 foreach (var prop in CommandProperties)
                 {
-                    var attr = prop.GetCustomAttribute<CliMenuAttribute>();
+                    var attr = prop.GetCustomAttribute<CliDescriptionAttribute>();
 
                     if (attr != null)
                     {
@@ -62,7 +62,7 @@ namespace CliToolkit
 
                 foreach (var prop in ConfigurationProperties)
                 {
-                    var attr = prop.GetCustomAttribute<CliMenuAttribute>();
+                    var attr = prop.GetCustomAttribute<CliDescriptionAttribute>();
 
                     if (attr != null)
                     {
@@ -151,7 +151,11 @@ namespace CliToolkit
                     .AddCommandLine(args, switchMaps)
                     .Build();
 
-                var section = newConfig.GetSection(Type.Name);
+                var namespaceAttr = Type.GetCustomAttribute<CliNamespaceAttribute>();
+
+                var section = newConfig.GetSection(namespaceAttr == null
+                    ? Type.Name
+                    : namespaceAttr.Namespace);
 
                 foreach (var prop in ConfigurationProperties)
                 {
@@ -185,7 +189,7 @@ namespace CliToolkit
             foreach (var prop in ConfigurationProperties)
             {
                 var kebabCase = KebabConvert(prop.Name);
-                var menuAttribute = prop.GetCustomAttribute<CliMenuAttribute>();
+                var menuAttribute = prop.GetCustomAttribute<CliDescriptionAttribute>();
                 switchMaps.Add($"--{prop.Name}", $"{baseName}:{prop.Name}");
 
                 if (kebabCase != prop.Name)
@@ -210,7 +214,7 @@ namespace CliToolkit
                 var parsedName = TrimCommandSuffix(type.Name);
                 var kebabName = KebabConvert(parsedName);
                 var arg = args[0];
-                var attribute = p.GetCustomAttribute<CliMenuAttribute>();
+                var attribute = p.GetCustomAttribute<CliDescriptionAttribute>();
 
                 if (arg.Equals(ParsedName, StringComparison.OrdinalIgnoreCase) ||
                     arg.Equals(kebabName, StringComparison.OrdinalIgnoreCase))
