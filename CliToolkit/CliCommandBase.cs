@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace CliToolkit
 {
@@ -15,7 +17,6 @@ namespace CliToolkit
             if (args.Length > 0)
             {
                 var subCommandProperty = FindMatchingSubCommand(args);
-                var argsTrim = args.Skip(1).ToArray();
 
                 if (subCommandProperty != null)
                 {
@@ -30,17 +31,38 @@ namespace CliToolkit
                     subCommandProperty.SetValue(this, sp.GetRequiredService(subCommandProperty.PropertyType));
                     var val = subCommandProperty.GetValue(this, null);
                     var subCommand = (CliCommandBase)val;
-                    subCommand.Parse(sc, config, argsTrim);
+                    subCommand.Parse(sc, config, args.Skip(1).ToArray());
                 }
                 else
                 {
-                    Finish(config, argsTrim);
+                    Finish(config, args);
                 }
             }
             else
             {
                 Finish(config, args);
             }
+        }
+
+        internal Dictionary<string, string> GetSwitchMaps(Type type)
+        {
+            var regex = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                 (?<=[^A-Z])(?=[A-Z]) |
+                 (?<=[A-Za-z])(?=[^A-Za-z])",RegexOptions.IgnorePatternWhitespace);
+
+            var baseName = type.Name;
+            var properties = type.GetProperties();
+            var switchMaps = new Dictionary<string, string>();
+
+            foreach (var prop in properties)
+            {
+                var kebabCase = regex.Replace(prop.Name, "-");
+                switchMaps.Add($"--{prop.Name}", $"{baseName}:{prop.Name}");
+                switchMaps.Add($"--{kebabCase}", $"{baseName}:{prop.Name}");
+            }
+
+            return switchMaps;
         }
 
         private PropertyInfo FindMatchingSubCommand(string[] args)

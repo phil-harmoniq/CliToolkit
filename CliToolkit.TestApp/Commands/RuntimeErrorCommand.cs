@@ -1,16 +1,19 @@
-﻿namespace CliToolkit.TestApp.Commands
+﻿using System;
+
+namespace CliToolkit.TestApp.Commands
 {
     [CliCommandRoute("error")]
-    public class RuntimeErrorCommand : CliCommand<RuntimeErrorOptions>
+    public class RuntimeErrorCommand : CliCommand
     {
-        protected override void OnExecute(RuntimeErrorOptions options, string[] args)
+        public bool IgnoreErrorFlag { get; set; }
+
+        protected override void OnExecute(string[] args)
         {
-            throw new System.NotImplementedException();
+            if (!IgnoreErrorFlag)
+            {
+                throw new System.NotImplementedException();
+            }
+            Console.WriteLine("Ignoring error...");
         }
-    }
-
-    public class RuntimeErrorOptions
-    {
-
     }
 }
