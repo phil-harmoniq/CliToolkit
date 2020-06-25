@@ -2,7 +2,6 @@
 
 namespace CliToolkit.TestApp.Commands
 {
-    [CliCommandRoute("error")]
     public class RuntimeErrorCommand : CliCommand
     {
         public bool IgnoreErrorFlag { get; set; }

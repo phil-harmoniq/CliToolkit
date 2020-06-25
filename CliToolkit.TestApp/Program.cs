@@ -11,7 +11,7 @@ namespace CliToolkit.TestApp
             var app = new CliAppBuilder<ApplicationRoot>()
                 //.Configure(Configure)
                 //.RegisterServices(RegisterServices)
-                .Start(new[] { "error", "--ignore-error-flag", "true" });
+                .Start(args);
             return app.ExitCode;
         }
 

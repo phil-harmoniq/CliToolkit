@@ -10,22 +10,17 @@ namespace CliToolkit
 
         internal override void Finish(IConfiguration config, string[] args)
         {
-            var type = GetType();
-            var properties = type.GetProperties()
-                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int) || p.PropertyType == typeof(bool))
-                .ToList();
-
-            if (properties.Count > 0)
+            if (ConfigurationProperties.Count > 0)
             {
-                var switchMaps = GetSwitchMaps(type);
+                var switchMaps = GetSwitchMaps(Type);
                 var newConfig = new ConfigurationBuilder()
                     .AddConfiguration(config)
                     .AddCommandLine(args, switchMaps)
                     .Build();
 
-                var section = newConfig.GetSection(type.Name);
+                var section = newConfig.GetSection(Type.Name);
 
-                foreach (var prop in properties)
+                foreach (var prop in ConfigurationProperties)
                 {
                     var value = section[prop.Name];
                     if (!string.IsNullOrEmpty(value))
