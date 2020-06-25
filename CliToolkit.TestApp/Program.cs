@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
 
 namespace CliToolkit.TestApp
 {
@@ -9,15 +8,10 @@ namespace CliToolkit.TestApp
         {
             var app = new CliAppBuilder<ApplicationRoot>()
                 .SetName("CLI Test App")
-                .Configure(Configure)
-                .RegisterServices(RegisterServices)
+                .Configure(c => c.AddJsonFile("appsettings.json"))
+                //.RegisterServices(RegisterServices)
                 .Start(args);
             return app.AppInfo.ExitCode;
-        }
-
-        private static void Configure(IConfigurationBuilder config)
-        {
-            config.AddJsonFile("appsettings.json");
         }
     }
 }
