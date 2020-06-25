@@ -218,3 +218,7 @@ _Pvt_Extensions
 
 # macOS directory index file
 *.DS_Store
+
+# Build/test output
+out/
+*.exe

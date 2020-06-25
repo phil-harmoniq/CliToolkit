@@ -2,15 +2,11 @@
 
 namespace CliToolkit.TestApp.Commands
 {
-    public class HelloWorldCommand : CliCommand<HelloWorldOptions>
+    public class HelloWorldCommand : CliCommand
     {
-        protected override void OnExecute(HelloWorldOptions options, string[] args)
+        protected override void OnExecute(string[] args)
         {
             Console.WriteLine("Hello, world!");
         }
-    }
-
-    public class HelloWorldOptions
-    {
     }
 }
