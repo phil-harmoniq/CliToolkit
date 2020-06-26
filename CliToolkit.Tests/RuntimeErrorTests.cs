@@ -1,6 +1,4 @@
 using CliToolkit.TestApp;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System;
 using Xunit;
 
@@ -9,14 +7,22 @@ namespace CliToolkit.Tests
     public class RuntimeErrorTests
     {
         [Fact]
-        public void Test1()
+        public void DefaultActionTest()
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .Configure(c => c.AddJsonFile("appsettings.json"))
-                //.RegisterServices(RegisterServices)
-                .Start(new[] { "error" });
+                .Build();
+
+            Assert.ThrowsAny<Exception>(() => app.Start(new[] { "error", "--ignore-error=false" }));
+        }
+
+        [Fact]
+        public void IgnoreErrorFlagTest()
+        {
+            var app = new CliAppBuilder<ApplicationRoot>()
+                .Start(new[] { "error", "--ignore-error=true" });
 
             Assert.NotNull(app.ErrorCommand);
+            Assert.True(app.ErrorCommand.IgnoreError) ;
         }
     }
 }

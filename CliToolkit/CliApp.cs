@@ -9,23 +9,12 @@ namespace CliToolkit
     {
         public CliAppInfo AppInfo { get; } = new CliAppInfo();
 
-        public int Start(string[] args)
+        public void Start(string[] args)
         {
             try
             {
                 PrintHeader();
                 Parse(this, args);
-                return AppInfo.ExitCode = 0;
-            }
-            catch (Exception ex)
-            {
-                if (!string.IsNullOrEmpty(ex.Message))
-                {
-                    Console.WriteLine($"{Color.Red}{Format.Bold}{ex.Message}{Reset.All}");
-                }
-                var logger = AppInfo.ServiceCollection.BuildServiceProvider().GetService<ILogger>();
-                logger?.LogError(ex, ex.Message);
-                return AppInfo.ExitCode = 1;
             }
             finally
             {
