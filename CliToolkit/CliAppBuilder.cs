@@ -59,9 +59,9 @@ namespace CliToolkit
             return this;
         }
 
-        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection> register)
+        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> register)
         {
-            register(_serviceCollection);
+            register(_serviceCollection, _configBuilder.Build());
             return this;
         }
 
