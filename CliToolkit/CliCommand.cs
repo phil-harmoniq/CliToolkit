@@ -202,7 +202,7 @@ namespace CliToolkit
                     }
                     else
                     {
-                        section = newConfig.GetSection(_type.Name);
+                        section = newConfig.GetSection(TextHelper.TrimCommandSuffix(_type.Name));
                     }
                 }
                 else if (string.IsNullOrEmpty(_namespaceAttribute.Namespace))
