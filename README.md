@@ -1,4 +1,4 @@
-# CliToolkit [![Build Status](https://dev.azure.com/ph-hawkins/CliToolkit/_apis/build/status/Develop%20Branch%20Build?branchName=develop)](https://dev.azure.com/ph-hawkins/CliToolkit/_build/latest?definitionId=1?branchName=develop) [![NuGet](https://img.shields.io/nuget/v/CliToolkit.svg)](https://www.nuget.org/packages/CliToolkit)
+# CliToolkit [![Build status](https://dev.azure.com/phil-harmoniq/devops/_apis/build/status/CliToolkit)](https://dev.azure.com/phil-harmoniq/devops/_build/latest?definitionId=7) [![NuGet](https://img.shields.io/nuget/v/CliToolkit.svg)](https://www.nuget.org/packages/CliToolkit)
 
 ## Installing
 
