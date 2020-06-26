@@ -8,11 +8,13 @@
   <PropertyGroup>
     <Authors>Phil Hawkins</Authors>
     <Copyright>MIT</Copyright>
-    <Description></Description>
-    <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <Description>Build powerful command-line appls with configuration and DI abstractions out-of-the-box.</Description>
     <PackageIconUrl></PackageIconUrl>
-    <PackageTags></PackageTags>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageTags>cli;terminal;command;configuration;di</PackageTags>
+    <LicenseUrl>https://raw.githubusercontent.com/phil-harmoniq/CliToolkit/develop/LICENSE.md</LicenseUrl>
+    <PackageProjectUrl>https://phil.harmoniq.dev/CliToolkit</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
