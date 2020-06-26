@@ -1,1 +1,0 @@
-dotnet (Join-Path $PSScriptRoot CliToolkit.Example bin Debug netcoreapp2.1 CliToolkit.Example.dll) $args

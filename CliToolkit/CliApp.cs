@@ -1,102 +1,52 @@
+﻿using AnsiCodes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using CliToolkit.Arguments;
-using CliToolkit.Exceptions;
-using CliToolkit.Core;
 
 namespace CliToolkit
 {
-    /// <summary>
-    /// Inherit this class to build a new CLI application.
-    /// </summary>
-    public abstract class CliApp : ICommand
+    public abstract class CliApp : CliCommand
     {
-        internal HelpMenu HelpMenu { get; }
+        public CliAppInfo AppInfo { get; } = new CliAppInfo();
 
-        /// <summary>
-        /// Contains meta-data about this application and its environment.
-        /// </summary>
-        public AppInfo AppInfo { get; }
-
-        /// <summary>
-        /// The exit code after running <see cref="OnExecute" />
-        /// </summary>
-        /// <value>Any non-zero value indicates an error during execution.</value>
-        public int ExitCode { get; internal set; }
-
-        /// <summary>
-        /// Constructs a new <see cref="CliApp" /> instance. This should not be called directly.
-        /// </summary>
-        protected CliApp()
-        {
-            AppInfo = new AppInfo();
-            HelpMenu = new HelpMenu("Displays the available options for this command.", "help", "h");
-        }
-
-        /// <summary>
-        /// Defines the default behavior when this application is executed.
-        /// </summary>
-        /// <param name="args">The arguments passed to this application.</param>
-        public abstract void OnExecute(string[] args);
-
-        // /// <summary>
-        // /// Prints the auto-generated help menu. Override this method for a custom menu.
-        // /// </summary>
-        // public virtual void PrintHelpMenu()
-        // {
-        // }
-
-        /// <summary>
-        /// Begins the application's execution cycle.
-        /// </summary>
-        /// <param name="args">The arguments passed to this application.</param>
-        /// <example>Call using the application's main entrypoint:
-        /// <code>
-        /// static void Main(string[] args)
-        /// {
-        ///     var app = new AppBuilder&lt;Program&gt;().Build();
-        ///     app.Start(args);
-        /// }
-        /// </code>
-        /// </example>
-        /// <returns></returns>
-        public CliApp Start(string[] args)
+        public int Start(string[] args)
         {
             try
             {
-                ArgParser.ParseArgs(this, args);
+                PrintHeader();
+                Parse(this, args);
+                return AppInfo.ExitCode = 0;
             }
-            catch (AppRuntimeException exception)
+            catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error:{AppInfo.NewLine}{exception.Message}");
-                Console.ResetColor();
-                ExitCode = exception.ExitCode;
+                if (!string.IsNullOrEmpty(ex.Message))
+                {
+                    Console.WriteLine($"{Color.Red}{Format.Bold}{ex.Message}{Reset.All}");
+                }
+                var logger = AppInfo.ServiceCollection.BuildServiceProvider().GetService<ILogger>();
+                logger?.LogError(ex, ex.Message);
+                return AppInfo.ExitCode = 1;
             }
             finally
             {
-                if (TextHelpers.HeaderWasShown) { TextHelpers.PrintFooter(this); }
+                PrintFooter();
             }
-
-            return this;
         }
 
-        /// <summary>
-        /// Prints the app header. The footer will also be printed after execution is complete.
-        /// </summary>
-        public void PrintHeader()
+        private void PrintHeader()
         {
-            TextHelpers.PrintHeader(this);
+            var title = $" {AppInfo.Name} v{AppInfo.Version} ";
+            var padWidth = (AppInfo.Width - title.Length) / 2;
+            var unevenWidth = (AppInfo.Width - title.Length) % 2 != 0;
+            var leftPad = new string('-', padWidth);
+            var rightPad = new string('-', unevenWidth ? padWidth + 1 : padWidth);
+            var output = Environment.NewLine + leftPad + Color.Cyan + Format.Bold + title + Reset.All + rightPad;
+            Console.WriteLine(output);
         }
 
-        /// <summary>
-        /// Prints a help menu that list all available commands and/or arguments contained in this CliApp.
-        /// </summary>
-        public void PrintHelpMenu()
+        private void PrintFooter()
         {
-            TextHelpers.PrintHelpMenu(this);
+            Console.WriteLine(new string('-', AppInfo.Width) + Environment.NewLine);
         }
     }
 }
