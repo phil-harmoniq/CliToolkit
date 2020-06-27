@@ -244,7 +244,11 @@ namespace CliToolkit
             foreach (var prop in _configurationProperties)
             {
                 switchMaps.Add($"--{prop.Name}", $"{GetNamespace()}:{prop.Name}");
-                switchMaps.Add($"--{TextHelper.KebabConvert(prop.Name)}", $"{GetNamespace()}:{prop.Name}");
+                var kebabName = TextHelper.KebabConvert(prop.Name);
+                if (!kebabName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    switchMaps.Add($"--{kebabName}", $"{GetNamespace()}:{prop.Name}");
+                }
             }
             return switchMaps;
         }
