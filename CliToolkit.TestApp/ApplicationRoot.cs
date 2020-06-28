@@ -16,7 +16,10 @@ namespace CliToolkit.TestApp
         public DefaultHelpMenuCommand HelpMenu { get; set; }
 
         [CliDescription("Show detected configuration variables")]
-        public ConfigurationValueCommand Config { get; set;}
+        public ConfigurationValueCommand Config { get; set; }
+
+        [CliDescription("Show alternate ways to set variables")]
+        public AlternateConfigurationCommand Alternate { get; set; }
 
         protected override void OnExecute(string[] args)
         {

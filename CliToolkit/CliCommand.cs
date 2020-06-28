@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,8 +92,22 @@ namespace CliToolkit
 
                 if (subCommandProp != null)
                 {
-                    _applicationRoot.AppInfo.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
-                    _serviceProvider = _applicationRoot.AppInfo.ServiceCollection.BuildServiceProvider();
+                    var configBuilder = new ConfigurationBuilder();
+                    _applicationRoot.AppInfo.UserConfigBuilder(configBuilder);
+                    configBuilder.AddCommandLine(args, GetSwitchMaps());
+                    var config = configBuilder.Build();
+
+                    var section = config.GetSection("CliOptions");
+                    var value = section["PleaseWork"];
+
+                    var services = new ServiceCollection();
+                    services.AddOptions();
+                    services.Configure<CliOptions>(config.GetSection(typeof(CliOptions).Name));
+                    services.AddSingleton(subCommandProp.PropertyType);
+                    _applicationRoot.AppInfo.UserServiceRegistration(services, config);
+                    _serviceProvider = services.BuildServiceProvider();
+
+                    var options = _serviceProvider.GetRequiredService<IOptions<CliOptions>>();
 
                     if (!subCommandProp.CanWrite)
                     {
@@ -188,7 +203,7 @@ namespace CliToolkit
             {
                 var switchMaps = GetSwitchMaps();
                 var newConfig = new ConfigurationBuilder()
-                    .AddConfiguration(_applicationRoot.AppInfo.Configuration)
+                    .AddConfiguration(_applicationRoot.AppInfo.ConfigurationBuilder.Build())
                     .AddCommandLine(args, switchMaps)
                     .Build();
 
