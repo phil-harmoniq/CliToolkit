@@ -171,12 +171,12 @@ namespace CliToolkit
 
             if (_namespaceAttribute == null)
             {
-                CommandName = TextHelper.TrimCommandSuffix(_type.Name);
+                CommandName = _type.Name;
                 KebabAlias = TextHelper.KebabConvert(_type.Name);
             }
             else
             {
-                CommandName = TextHelper.TrimCommandSuffix(_namespaceAttribute.Namespace);
+                CommandName = _namespaceAttribute.Namespace;
                 KebabAlias = TextHelper.KebabConvert(_namespaceAttribute.Namespace);
             }
         }
@@ -202,7 +202,7 @@ namespace CliToolkit
                     }
                     else
                     {
-                        section = newConfig.GetSection(TextHelper.TrimCommandSuffix(_type.Name));
+                        section = newConfig.GetSection(CommandName);
                     }
                 }
                 else if (string.IsNullOrEmpty(_namespaceAttribute.Namespace))
@@ -259,7 +259,7 @@ namespace CliToolkit
             {
                 var aliases = new List<string>
                 {
-                    TextHelper.TrimCommandSuffix(p.Name),
+                    p.Name,
                     TextHelper.KebabConvert(p.Name)
                 };
                 return aliases.Contains(arg, new IgnoreCaseComparer());

@@ -21,8 +21,8 @@ namespace CliToolkit.Tests
             var app = new CliAppBuilder<ApplicationRoot>()
                 .Start(new[] { "error", "--ignore-error=true" });
 
-            Assert.NotNull(app.ErrorCommand);
-            Assert.True(app.ErrorCommand.IgnoreError) ;
+            Assert.NotNull(app.Error);
+            Assert.True(app.Error.IgnoreError) ;
         }
     }
 }
