@@ -13,9 +13,9 @@ namespace CliToolkit.Tests
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 .Start(new[] { "config" });
 
-            Assert.Equal("Wow!", app.ConfigCommand.StringValue);
-            Assert.Equal(42, app.ConfigCommand.IntValue);
-            Assert.True(app.ConfigCommand.BoolValue);
+            Assert.Equal("Wow!", app.Config.StringValue);
+            Assert.Equal(42, app.Config.IntValue);
+            Assert.True(app.Config.BoolValue);
         }
     }
 }

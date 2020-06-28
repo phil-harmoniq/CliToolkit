@@ -7,16 +7,16 @@ namespace CliToolkit.TestApp
     public class ApplicationRoot : CliApp
     {
         [CliDescription("Print hello world")]
-        public HelloWorldCommand HelloCommand { get; set; }
+        public HelloWorldCommand Hello { get; set; }
 
         [CliDescription("Simulate a run-time error")]
-        public RuntimeErrorCommand ErrorCommand { get; set; }
+        public RuntimeErrorCommand Error { get; set; }
 
         [CliDescription("Example of common help paramater parsing")]
-        public DefaultHelpMenuCommand HelpMenuCommand { get; set; }
+        public DefaultHelpMenuCommand HelpMenu { get; set; }
 
         [CliDescription("Show detected configuration variables")]
-        public ConfigurationValueCommand ConfigCommand { get; set;}
+        public ConfigurationValueCommand Config { get; set;}
 
         protected override void OnExecute(string[] args)
         {
