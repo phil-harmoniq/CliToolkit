@@ -17,11 +17,10 @@ namespace CliToolkit.Tests
             var app = new CliAppBuilder<ApplicationRoot>()
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 .RegisterServices(Register)
-                .Start(new[] { "alternate", "--AlternateConfigurationOptions:StringFromConsole=plzzz" });
+                .Start(new[] { "alternate", "--AlternateConfigurationOptions:StringFromConsole=this-is-console" });
 
-            Assert.Equal("Wow!", app.Config.StringValue);
-            Assert.Equal(42, app.Config.IntValue);
-            Assert.True(app.Config.BoolValue);
+            Assert.Equal("this-is-console", app.Alternate.Options.StringFromConsole);
+            Assert.Equal("this-is-json", app.Alternate.Options.StringFromJson);
         }
 
         private void Register(IServiceCollection sc, IConfiguration config)
