@@ -12,7 +12,7 @@ namespace CliToolkit.Tests
             var app = new CliAppBuilder<ApplicationRoot>()
                 .Build();
 
-            Assert.ThrowsAny<Exception>(() => app.Start(new[] { "error", "--ignore-error=false" }));
+            Assert.ThrowsAny<Exception>(() => app.Start(new[] { "error" }));
         }
 
         [Fact]

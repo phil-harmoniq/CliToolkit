@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,8 +92,17 @@ namespace CliToolkit
 
                 if (subCommandProp != null)
                 {
-                    _applicationRoot.AppInfo.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
-                    _serviceProvider = _applicationRoot.AppInfo.ServiceCollection.BuildServiceProvider();
+                    var configBuilder = new ConfigurationBuilder();
+                    _applicationRoot.AppInfo.UserConfigBuilder?.Invoke(configBuilder);
+                    configBuilder.AddCommandLine(args, GetSwitchMaps());
+                    var config = configBuilder.Build();
+
+                    var services = new ServiceCollection();
+                    services.AddOptions();
+                    services.AddSingleton(subCommandProp.PropertyType);
+
+                    _applicationRoot.AppInfo.UserServiceRegistration?.Invoke(services, config);
+                    _serviceProvider = services.BuildServiceProvider();
 
                     if (!subCommandProp.CanWrite)
                     {
@@ -186,11 +196,10 @@ namespace CliToolkit
             var name = GetNamespace();
             if (_configurationProperties.Count > 0)
             {
-                var switchMaps = GetSwitchMaps();
-                var newConfig = new ConfigurationBuilder()
-                    .AddConfiguration(_applicationRoot.AppInfo.Configuration)
-                    .AddCommandLine(args, switchMaps)
-                    .Build();
+                var configBuilder = new ConfigurationBuilder();
+                _applicationRoot.AppInfo.UserConfigBuilder?.Invoke(configBuilder);
+                configBuilder.AddCommandLine(args, GetSwitchMaps());
+                var config = configBuilder.Build();
 
                 IConfiguration section;
 
@@ -198,20 +207,20 @@ namespace CliToolkit
                 {
                     if (IsApplicationRoot)
                     {
-                        section = newConfig;
+                        section = config;
                     }
                     else
                     {
-                        section = newConfig.GetSection(CommandName);
+                        section = config.GetSection(CommandName);
                     }
                 }
                 else if (string.IsNullOrEmpty(_namespaceAttribute.Namespace))
                 {
-                    section = newConfig;
+                    section = config;
                 }
                 else
                 {
-                    section = newConfig.GetSection(_namespaceAttribute.Namespace);
+                    section = config.GetSection(_namespaceAttribute.Namespace);
                 }
 
                 foreach (var prop in _configurationProperties)

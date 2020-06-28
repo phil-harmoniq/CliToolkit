@@ -22,6 +22,7 @@ namespace CliToolkit
             _serviceCollection = new ServiceCollection();
             _configBuilder = new ConfigurationBuilder();
             _app.AppInfo.Width = _defaultWidth;
+            _serviceCollection.AddOptions();
         }
 
         public TApp Build()
@@ -39,7 +40,7 @@ namespace CliToolkit
                 _app.AppInfo.Name = assembly.GetName().Name;
             }
 
-            _app.AppInfo.Configuration = _configBuilder.Build();
+            _app.AppInfo.ConfigurationBuilder = _configBuilder;
             _app.AppInfo.ServiceCollection = _serviceCollection;
             _app.AppInfo.ServiceCollection.AddSingleton<CliApp>(_app);
 
@@ -55,13 +56,13 @@ namespace CliToolkit
 
         public CliAppBuilder<TApp> Configure(Action<IConfigurationBuilder> configure)
         {
-            configure(_configBuilder);
+            _app.AppInfo.UserConfigBuilder = configure;
             return this;
         }
 
         public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> register)
         {
-            register(_serviceCollection, _configBuilder.Build());
+            _app.AppInfo.UserServiceRegistration = register;
             return this;
         }
 
