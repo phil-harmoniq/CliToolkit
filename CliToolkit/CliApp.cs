@@ -1,41 +1,27 @@
-﻿using AnsiCodes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using CliToolkit.Utilities;
 
 namespace CliToolkit
 {
     public abstract class CliApp : CliCommand
     {
-        public CliAppInfo AppInfo { get; } = new CliAppInfo();
+        private AppSettings _userSettings;
 
         public void Start(string[] args)
         {
             try
             {
-                PrintHeader();
-                Parse(this, args);
+                //PrintHeader();
+                Parse(this, _userSettings ?? new AppSettings(), args);
             }
             finally
             {
-                PrintFooter();
+                //PrintFooter();
             }
         }
 
-        private void PrintHeader()
+        internal void AddAppSettings(AppSettings userSettings)
         {
-            var title = $" {AppInfo.Name} v{AppInfo.Version} ";
-            var padWidth = (AppInfo.Width - title.Length) / 2;
-            var unevenWidth = (AppInfo.Width - title.Length) % 2 != 0;
-            var leftPad = new string('-', padWidth);
-            var rightPad = new string('-', unevenWidth ? padWidth + 1 : padWidth);
-            var output = Environment.NewLine + leftPad + Color.Cyan + Format.Bold + title + Reset.All + rightPad;
-            Console.WriteLine(output);
-        }
-
-        private void PrintFooter()
-        {
-            Console.WriteLine(new string('-', AppInfo.Width) + Environment.NewLine);
+            _userSettings = userSettings;
         }
     }
 }

@@ -3,16 +3,12 @@ using System.Linq;
 
 namespace CliToolkit.TestApp.Commands
 {
-    [CliDescription("Example of common help menu handling")]
     public class DefaultHelpMenuCommand : CliCommand
     {
-        [CliDescription("Give me a string!")]
         public string StringValue { get; set; }
 
-        [CliDescription("Give me an int!")]
         public int IntValue { get; set; }
 
-        [CliDescription("Give me a bool!")]
         public bool BoolValue { get; set; }
 
         protected override void OnExecute(string[] args)
@@ -23,7 +19,7 @@ namespace CliToolkit.TestApp.Commands
             }
             if (args.Contains("--help"))
             {
-                PrintHelpMenu();
+                //PrintHelpMenu();
             }
         }
     }

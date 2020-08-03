@@ -4,14 +4,14 @@ namespace CliToolkit.TestApp
 {
     class Program
     {
-        static int Main(string[] args)
+        static void Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .SetName("CLI Test App")
+                //.SetName("CLI Test App")
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 //.RegisterServices(RegisterServices)
                 .Start(args);
-            return app.AppInfo.ExitCode;
+            //return app.AppInfo.ExitCode;
         }
     }
 }

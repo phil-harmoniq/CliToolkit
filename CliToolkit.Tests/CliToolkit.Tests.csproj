@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CliToolkit.TestApp\CliToolkit.TestApp.csproj" />
-    <ProjectReference Include="..\CliToolkit\CliToolkit.csproj" />
   </ItemGroup>
 
 </Project>
