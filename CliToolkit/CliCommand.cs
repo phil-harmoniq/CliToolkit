@@ -65,7 +65,7 @@ namespace CliToolkit
                     var config = configBuilder.Build();
                     services.AddOptions();
                     services.AddSingleton(subCommandProp.PropertyType);
-                    userSettings.UserServices?.Invoke(services, config);
+                    userSettings.UserServiceRegistration?.Invoke(services, config);
                     var serviceProvider = services.BuildServiceProvider();
 
                     if (!subCommandProp.CanWrite)
@@ -161,12 +161,9 @@ namespace CliToolkit
         {
             return _commandProperties.FirstOrDefault(p =>
             {
-                var aliases = new List<string>
-                {
-                    p.Name,
-                    TextHelper.KebabConvert(p.Name)
-                };
-                return aliases.Contains(arg, new IgnoreCaseComparer());
+                var kebabName = TextHelper.KebabConvert(p.Name);
+                return arg.Equals(p.Name, StringComparison.InvariantCultureIgnoreCase)
+                    || arg.Equals(kebabName, StringComparison.InvariantCultureIgnoreCase);
             });
         }
     }

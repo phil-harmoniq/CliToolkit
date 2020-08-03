@@ -21,6 +21,9 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Test configuration through IOptions injection")]
         public AlternateConfigurationCommand Alternate { get; set; }
 
+        [CliOptions(Description = "Test built-in dependency injection")]
+        public DependencyInjectionCommand DependencyInjection { get; set; }
+
         protected override void OnExecute(string[] args)
         {
             //PrintHelpMenu();

@@ -22,7 +22,7 @@ namespace CliToolkit.Tests
                 .Start(new[] { "error", "--ignore-error=true" });
 
             Assert.NotNull(app.Error);
-            Assert.True(app.Error.IgnoreError) ;
+            Assert.True(app.Error.IgnoreError);
         }
     }
 }

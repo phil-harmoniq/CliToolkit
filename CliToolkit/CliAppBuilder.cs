@@ -7,22 +7,23 @@ namespace CliToolkit
 {
     public class CliAppBuilder<TApp> where TApp : CliApp, new()
     {
-        private Action<IConfigurationBuilder> _userConfiguration;
-        private Action<IServiceCollection, IConfiguration> _userServices;
+        private readonly AppSettings _appSettings;
 
         public CliAppBuilder()
         {
+            _appSettings = new AppSettings();
         }
 
         public TApp Build()
         {
-            var app = new TApp();
-            var appSettings = new AppSettings
-            {
-                UserConfiguration = _userConfiguration,
-                UserServices = _userServices,
-            };
-            app.AddAppSettings(appSettings);
+            var cb = new ConfigurationBuilder();
+            var sc = new ServiceCollection();
+            _appSettings.UserConfiguration?.Invoke(cb);
+            sc.AddSingleton<TApp>();
+            _appSettings.UserServiceRegistration?.Invoke(sc, cb.Build());
+            var services = sc.BuildServiceProvider();
+            var app = services.GetRequiredService<TApp>();
+            app.AddAppSettings(_appSettings);
             return app;
         }
 
@@ -35,13 +36,27 @@ namespace CliToolkit
 
         public CliAppBuilder<TApp> Configure(Action<IConfigurationBuilder> configure)
         {
-            _userConfiguration = configure;
+            _appSettings.UserConfiguration = configure;
             return this;
         }
 
-        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> register)
+        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> registerServices)
         {
-            _userServices = register;
+            _appSettings.UserServiceRegistration = registerServices;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> SetMenuWidth(int menuWidth)
+        {
+            _appSettings.MenuWidth = menuWidth;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> ShowHeaderAndFooter(Action header = null, Action footer = null)
+        {
+            if (header != null) { _appSettings.HeaderAction = header; }
+            if (footer != null) { _appSettings.FooterAction = footer; }
+            _appSettings.ShowHeaderFooter = true;
             return this;
         }
     }
