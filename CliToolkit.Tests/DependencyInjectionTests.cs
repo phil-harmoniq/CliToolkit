@@ -18,6 +18,8 @@ namespace CliToolkit.Tests
 
             Assert.NotNull(app.DependencyInjection.FakeService1);
             Assert.NotNull(app.DependencyInjection.FakeService2);
+            Assert.Null(app.DependencyInjection.NullService1);
+            Assert.Null(app.DependencyInjection.NullService2);
         }
 
         private void RegisterServices(IServiceCollection services, IConfiguration config)

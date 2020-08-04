@@ -7,6 +7,8 @@ namespace CliToolkit.TestApp.Commands
     {
         public FakeService1 FakeService1 { get; }
         public FakeService2 FakeService2 { get; }
+        public FakeService1 NullService1 { get; }
+        public FakeService2 NullService2 { get; }
 
         public DependencyInjectionCommand(
             FakeService1 fakeService1,
@@ -20,6 +22,8 @@ namespace CliToolkit.TestApp.Commands
         {
             Console.WriteLine($"{nameof(FakeService1)}: {FakeService1}");
             Console.WriteLine($"{nameof(FakeService2)}: {FakeService2}");
+            Console.WriteLine($"{nameof(NullService1)}: {NullService1}");
+            Console.WriteLine($"{nameof(NullService2)}: {NullService2}");
         }
     }
 }

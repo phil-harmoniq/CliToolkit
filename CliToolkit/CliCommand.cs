@@ -1,4 +1,4 @@
-﻿using CliToolkit.Utilities;
+﻿using CliToolkit.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -161,9 +161,12 @@ namespace CliToolkit
         {
             return _commandProperties.FirstOrDefault(p =>
             {
-                var kebabName = TextHelper.KebabConvert(p.Name);
-                return arg.Equals(p.Name, StringComparison.InvariantCultureIgnoreCase)
-                    || arg.Equals(kebabName, StringComparison.InvariantCultureIgnoreCase);
+                var aliases = new List<string>
+                {
+                    p.Name,
+                    TextHelper.KebabConvert(p.Name)
+                };
+                return aliases.Contains(arg, new IgnoreCaseComparer());
             });
         }
     }

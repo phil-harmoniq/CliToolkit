@@ -2,9 +2,6 @@
 using CliToolkit.TestApp.Commands;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace CliToolkit.Tests

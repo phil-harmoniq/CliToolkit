@@ -1,4 +1,4 @@
-﻿using CliToolkit.Utilities;
+﻿using CliToolkit.Internal;
 
 namespace CliToolkit
 {
@@ -10,12 +10,12 @@ namespace CliToolkit
         {
             try
             {
-                //PrintHeader();
-                Parse(this, _userSettings ?? new AppSettings(), args);
+                if (_userSettings.ShowHeaderFooter) { _userSettings.HeaderAction.Invoke(); }
+                Parse(this, _userSettings, args);
             }
             finally
             {
-                //PrintFooter();
+                if (_userSettings.ShowHeaderFooter) { _userSettings.FooterAction.Invoke(); }
             }
         }
 

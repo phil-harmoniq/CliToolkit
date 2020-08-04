@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CliToolkit.Utilities
+namespace CliToolkit.Internal
 {
     internal class IgnoreCaseComparer : IEqualityComparer<string>
     {

@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace CliToolkit.Utilities
+namespace CliToolkit.Internal
 {
     internal static class TextHelper
     {

@@ -1,13 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 
-namespace CliToolkit.Utilities
+namespace CliToolkit.Internal
 {
     internal class AppSettings
     {
         internal AssemblyName AppInfo { get; }
+        public FileVersionInfo VersionInfo { get; }
 
         internal bool ShowHeaderFooter { get; set; }
         internal Action HeaderAction { get; set; }
@@ -18,12 +20,16 @@ namespace CliToolkit.Utilities
 
         internal AppSettings()
         {
-            AppInfo = Assembly.GetEntryAssembly().GetName();
+            var assembly = Assembly.GetEntryAssembly();
+            AppInfo = assembly.GetName();
+            VersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            HeaderAction = HeaderActionDefault;
+            FooterAction = FooterActionDefault;
         }
 
         private void HeaderActionDefault()
         {
-            var title = $" {AppInfo.Name} v{AppInfo.Version} ";
+            var title = $" {AppInfo.Name} v{VersionInfo.ProductVersion} ";
             var padWidth = (MenuWidth - title.Length) / 2;
             var unevenWidth = (MenuWidth - title.Length) % 2 != 0;
             var leftPad = new string('-', padWidth);
