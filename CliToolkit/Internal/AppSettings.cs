@@ -17,6 +17,8 @@ namespace CliToolkit.Internal
         internal ConsoleColor TitleColor { get; set; } = ConsoleColor.Cyan;
         internal string Name { get; set; }
         internal string Version { get; set; }
+        internal ConfigurationBuilder ConfigurationBuilder { get; set; }
+        internal ServiceCollection ServiceCollection { get; set; }
 
         internal AppSettings()
         {

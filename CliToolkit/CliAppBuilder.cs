@@ -19,12 +19,17 @@ namespace CliToolkit
 
         public TApp Build()
         {
-            var cb = new ConfigurationBuilder();
-            var sc = new ServiceCollection();
-            _appSettings.UserConfiguration?.Invoke(cb);
-            sc.AddSingleton<TApp>();
-            _appSettings.UserServiceRegistration?.Invoke(sc, cb.Build());
-            var services = sc.BuildServiceProvider();
+            _appSettings.ConfigurationBuilder = new ConfigurationBuilder();
+            _appSettings.ServiceCollection = new ServiceCollection();
+
+            _appSettings.UserConfiguration?.Invoke(_appSettings.ConfigurationBuilder);
+            _appSettings.ServiceCollection.AddSingleton<TApp>();
+            _appSettings.ServiceCollection.AddOptions();
+            _appSettings.UserServiceRegistration?.Invoke(
+                _appSettings.ServiceCollection,
+                _appSettings.ConfigurationBuilder.Build());
+
+            var services = _appSettings.ServiceCollection.BuildServiceProvider();
             var app = services.GetRequiredService<TApp>();
             app.AddAppSettings(_appSettings);
             return app;

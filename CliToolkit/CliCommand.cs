@@ -58,15 +58,11 @@ namespace CliToolkit
                 if (subCommandProp != null)
                 {
                     var switchMaps = GetSwitchMaps();
-                    var configBuilder = new ConfigurationBuilder();
-                    var services = new ServiceCollection();
-                    userSettings.UserConfiguration?.Invoke(configBuilder);
-                    configBuilder.AddCommandLine(args, switchMaps);
-                    var config = configBuilder.Build();
-                    services.AddOptions();
-                    services.AddSingleton(subCommandProp.PropertyType);
-                    userSettings.UserServiceRegistration?.Invoke(services, config);
-                    var serviceProvider = services.BuildServiceProvider();
+                    _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
+                    var config = _userSettings.ConfigurationBuilder.Build();
+                    _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
+                    _userSettings.UserServiceRegistration?.Invoke(_userSettings.ServiceCollection, config);
+                    var serviceProvider = _userSettings.ServiceCollection.BuildServiceProvider();
 
                     if (!subCommandProp.CanWrite)
                     {
