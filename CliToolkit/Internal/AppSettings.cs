@@ -8,9 +8,6 @@ namespace CliToolkit.Internal
 {
     internal class AppSettings
     {
-        internal AssemblyName AppInfo { get; }
-        public FileVersionInfo VersionInfo { get; }
-
         internal bool ShowHeaderFooter { get; set; }
         internal Action HeaderAction { get; set; }
         internal Action FooterAction { get; set; }
@@ -18,19 +15,21 @@ namespace CliToolkit.Internal
         internal Action<IServiceCollection, IConfiguration> UserServiceRegistration { get; set; }
         internal int MenuWidth { get; set; } = 72;
         internal ConsoleColor TitleColor { get; set; } = ConsoleColor.Cyan;
+        internal string Name { get; set; }
+        internal string Version { get; set; }
 
         internal AppSettings()
         {
             var assembly = Assembly.GetEntryAssembly();
-            AppInfo = assembly.GetName();
-            VersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+            Name = assembly.GetName().Name;
+            Version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
             HeaderAction = HeaderActionDefault;
             FooterAction = FooterActionDefault;
         }
 
         private void HeaderActionDefault()
         {
-            var title = $" {AppInfo.Name} v{VersionInfo.ProductVersion} ";
+            var title = $" {Name} v{Version} ";
             var padWidth = (MenuWidth - title.Length) / 2;
             var unevenWidth = (MenuWidth - title.Length) % 2 != 0;
             var leftPad = new string('-', padWidth);
