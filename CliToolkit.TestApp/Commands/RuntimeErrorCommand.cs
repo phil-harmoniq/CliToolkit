@@ -10,7 +10,7 @@ namespace CliToolkit.TestApp.Commands
         {
             if (!IgnoreError)
             {
-                throw new NotImplementedException();
+                throw new CliException(5);
             }
             Console.WriteLine("Ignoring error...");
         }

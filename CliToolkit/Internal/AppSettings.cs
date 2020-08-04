@@ -17,6 +17,7 @@ namespace CliToolkit.Internal
         internal Action<IConfigurationBuilder> UserConfiguration { get; set; }
         internal Action<IServiceCollection, IConfiguration> UserServiceRegistration { get; set; }
         internal int MenuWidth { get; set; } = 72;
+        internal ConsoleColor TitleColor { get; set; } = ConsoleColor.Cyan;
 
         internal AppSettings()
         {
@@ -35,8 +36,8 @@ namespace CliToolkit.Internal
             var leftPad = new string('-', padWidth);
             var rightPad = new string('-', unevenWidth ? padWidth + 1 : padWidth);
             Console.Write(Environment.NewLine + leftPad);
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write(title, ConsoleColor.Cyan);
+            Console.ForegroundColor = TitleColor;
+            Console.Write(title);
             Console.ResetColor();
             Console.Write(rightPad + Environment.NewLine);
         }

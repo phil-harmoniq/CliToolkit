@@ -52,7 +52,20 @@ namespace CliToolkit
             return this;
         }
 
-        public CliAppBuilder<TApp> ShowHeaderAndFooter(Action header = null, Action footer = null)
+        public CliAppBuilder<TApp> ShowHeaderAndFooter()
+        {
+            _appSettings.ShowHeaderFooter = true;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> ShowHeaderAndFooter(ConsoleColor titleColor)
+        {
+            _appSettings.TitleColor = titleColor;
+            _appSettings.ShowHeaderFooter = true;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> ShowHeaderAndFooter(Action header, Action footer)
         {
             if (header != null) { _appSettings.HeaderAction = header; }
             if (footer != null) { _appSettings.FooterAction = footer; }

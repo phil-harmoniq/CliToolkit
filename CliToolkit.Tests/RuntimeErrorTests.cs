@@ -1,5 +1,4 @@
 using CliToolkit.TestApp;
-using System;
 using Xunit;
 
 namespace CliToolkit.Tests
@@ -10,9 +9,9 @@ namespace CliToolkit.Tests
         public void DefaultActionTest()
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .Build();
+                .Start(new[] { "error" });
 
-            Assert.ThrowsAny<Exception>(() => app.Start(new[] { "error" }));
+            Assert.Equal(5, app.ExitCode);
         }
 
         [Fact]
