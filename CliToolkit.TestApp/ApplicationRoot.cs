@@ -12,7 +12,6 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Simulate throwing an error")]
         public RuntimeErrorCommand Error { get; set; }
 
-        [CliOptions(Description = "Show console app help menu")]
         public DefaultHelpMenuCommand HelpMenu { get; set; }
 
         [CliOptions(Description = "Test various configuration options")]
@@ -26,7 +25,7 @@ namespace CliToolkit.TestApp
 
         protected override void OnExecute(string[] args)
         {
-            //PrintHelpMenu();
+            PrintHelpMenu();
             throw new Exception("");
         }
     }

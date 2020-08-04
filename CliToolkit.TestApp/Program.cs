@@ -9,7 +9,7 @@ namespace CliToolkit.TestApp
         static void Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .SetName("CLI Test App")
+                .SetName("CliToolkit Test App")
                 .SetVersion("1.2.3.4-alpha")
                 .SetMenuWidth(84)
                 .ShowHeaderAndFooter()

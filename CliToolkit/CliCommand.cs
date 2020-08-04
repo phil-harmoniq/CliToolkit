@@ -10,6 +10,9 @@ namespace CliToolkit
 {
     public abstract class CliCommand
     {
+        private const string _titlePad = "  ";
+        private const string _optionPad = "    ";
+
         private readonly Type _type;
         private readonly bool _isAppRoot;
         private readonly CliOptionsAttribute _optionsAttribute;
@@ -29,14 +32,53 @@ namespace CliToolkit
             var allProps = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             _configurationProperties = allProps.Where(p =>
-                p.PropertyType == typeof(string)
+                (p.PropertyType == typeof(string)
                 || p.PropertyType == typeof(int)
                 || p.PropertyType == typeof(bool))
+                && p.HasPublicSetter())
                 .ToList();
 
             _commandProperties = allProps.Where(p =>
                 p.PropertyType.IsSubclassOf(typeof(CliCommand)))
                 .ToList();
+        }
+
+        public void PrintHelpMenu()
+        {
+            Console.WriteLine();
+
+            var optionsAttr = _type.GetCustomAttribute<CliOptionsAttribute>();
+
+            if (optionsAttr != null)
+            {
+                Console.WriteLine($"{_titlePad}{optionsAttr.Description}{Environment.NewLine}");
+            }
+
+            if (_commandProperties.Count > 0)
+            {
+                Console.WriteLine($"{_titlePad}Commands:");
+
+                foreach (var prop in _commandProperties)
+                {
+                    var kebab = TextHelper.KebabConvert(prop.Name).ToLower();
+                    Console.WriteLine($"{_optionPad}{kebab}");
+                }
+
+                Console.WriteLine();
+            }
+
+            if (_configurationProperties.Count > 0)
+            {
+                Console.WriteLine($"{_titlePad}Options:");
+
+                foreach (var prop in _configurationProperties)
+                {
+                    var kebab = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
+                    Console.WriteLine($"{_optionPad}{kebab}");
+                }
+
+                Console.WriteLine();
+            }
         }
 
         protected abstract void OnExecute(string[] args);

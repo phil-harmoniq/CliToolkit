@@ -10,8 +10,6 @@
     <SelfContained>false</SelfContained>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <PublishDir>bin</PublishDir>
   </PropertyGroup>
 
@@ -33,5 +31,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CliToolkit\CliToolkit.csproj" />
   </ItemGroup>
+
+  <Target Name="target6" AfterTargets="AfterPublish">
+    <Delete Files="bin\CliToolkit.pdb" />
+  </Target>
 
 </Project>
