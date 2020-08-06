@@ -32,7 +32,7 @@ namespace CliToolkit.TestApp
         protected override void OnExecute(string[] args)
         {
             PrintHelpMenu();
-            throw new Exception("");
+            throw new CliException("Please provide a sub-command");
         }
     }
 }

@@ -65,9 +65,15 @@ namespace CliToolkit
 
                 foreach (var prop in _configurationProperties)
                 {
-                    var shortKey = prop.GetCustomAttribute<CliOptionsAttribute>()?.ShortKey;
-                    var kebab = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
-                    Console.WriteLine($"{_optionPad}{kebab}");
+                    var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
+
+                    var output = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
+                    if (attr != null && attr.ShortKey.IsValidShortKey())
+                    {
+                        output = $"{output}, -{attr.ShortKey}";
+                    }
+
+                    Console.WriteLine($"{_optionPad}{output}");
                 }
 
                 Console.WriteLine();

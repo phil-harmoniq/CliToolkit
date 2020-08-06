@@ -1,7 +1,7 @@
 ﻿namespace CliToolkit.TestApp.Commands
 {
-    [CliOptions(Description = "Demonstrate that attempting to set duplicate"
-        + "short-keys will throw a builder exception")]
+    [CliOptions(
+        Description = "Demonstrate that attempting to set duplicate short-keys will throw a builder exception")]
     public class ShortKeyDuplicateCommand : CliCommand
     {
         [CliOptions(ShortKey = 's', Description = "String option")]

@@ -19,15 +19,23 @@ namespace CliToolkit
             catch (CliException ex)
             {
                 ExitCode = ex.ExitCode;
-                PrintError(ex);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
             }
-            catch (Exception ex)
+            catch (CliAppBuilderException ex)
             {
-                PrintError(ex);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Failed to initialized the given command.");
+                Console.WriteLine(ex.Message);
+            }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
                 throw;
             }
             finally
             {
+                Console.ResetColor();
                 if (_userSettings.ShowHeaderFooter) { _userSettings.FooterAction.Invoke(); }
             }
         }
@@ -35,13 +43,6 @@ namespace CliToolkit
         internal void AddAppSettings(AppSettings userSettings)
         {
             _userSettings = userSettings;
-        }
-
-        private void PrintError(Exception ex)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(ex.Message);
-            Console.ResetColor();
         }
     }
 }
