@@ -23,6 +23,9 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Test built-in dependency injection")]
         public DependencyInjectionCommand DependencyInjection { get; set; }
 
+        [CliOptions(Description = "Test short-key configuration")]
+        public ShortKeyCommand ShortKey { get; set; }
+
         protected override void OnExecute(string[] args)
         {
             PrintHelpMenu();

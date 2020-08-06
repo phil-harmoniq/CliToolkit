@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace CliToolkit.Tests
 {
-    internal static class Extensions
+    internal static class TestExtensions
     {
         internal static IServiceCollection AddConfig<TConfig>(
             this IServiceCollection services, IConfiguration config) where TConfig : class, new()

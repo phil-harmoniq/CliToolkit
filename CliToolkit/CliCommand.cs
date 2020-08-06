@@ -31,27 +31,19 @@ namespace CliToolkit
 
             var allProps = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            _configurationProperties = allProps.Where(p =>
-                (p.PropertyType == typeof(string)
-                || p.PropertyType == typeof(int)
-                || p.PropertyType == typeof(bool))
-                && p.HasPublicSetter())
-                .ToList();
-
-            _commandProperties = allProps.Where(p =>
-                p.PropertyType.IsSubclassOf(typeof(CliCommand)))
-                .ToList();
+            _configurationProperties = allProps.GetConfigProperties();
+            _commandProperties = allProps.GetCommandProperties();
         }
 
         public void PrintHelpMenu()
         {
             Console.WriteLine();
 
-            var optionsAttr = _type.GetCustomAttribute<CliOptionsAttribute>();
+            var rootAttr = _type.GetCustomAttribute<CliOptionsAttribute>();
 
-            if (optionsAttr != null)
+            if (rootAttr != null)
             {
-                Console.WriteLine($"{_titlePad}{optionsAttr.Description}{Environment.NewLine}");
+                Console.WriteLine($"{_titlePad}{rootAttr.Description}{Environment.NewLine}");
             }
 
             if (_commandProperties.Count > 0)
@@ -73,6 +65,7 @@ namespace CliToolkit
 
                 foreach (var prop in _configurationProperties)
                 {
+                    var shortKey = prop.GetCustomAttribute<CliOptionsAttribute>()?.ShortKey;
                     var kebab = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
                     Console.WriteLine($"{_optionPad}{kebab}");
                 }
@@ -99,7 +92,10 @@ namespace CliToolkit
 
                 if (subCommandProp != null)
                 {
-                    var switchMaps = GetSwitchMaps();
+                    var subType = subCommandProp.PropertyType;
+                    var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                    var configProps = subProps.GetConfigProperties();
+                    var switchMaps = GetSwitchMaps(configProps);
                     _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
                     var config = _userSettings.ConfigurationBuilder.Build();
                     _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
@@ -135,10 +131,10 @@ namespace CliToolkit
             return _parent.GetNamespaceList(namespaceList);
         }
 
-        private Dictionary<string, string> GetSwitchMaps()
+        private Dictionary<string, string> GetSwitchMaps(IList<PropertyInfo> configProperties)
         {
             var switchMaps = new Dictionary<string, string>();
-            foreach (var prop in _configurationProperties)
+            foreach (var prop in configProperties)
             {
                 switchMaps.Add($"--{prop.Name}", $"{_namespace}:{prop.Name}");
                 var kebabName = TextHelper.KebabConvert(prop.Name);
@@ -147,9 +143,15 @@ namespace CliToolkit
                     switchMaps.Add($"--{kebabName}", $"{_namespace}:{prop.Name}");
                 }
                 var propOptions = prop.GetCustomAttribute<CliOptionsAttribute>();
-                if (propOptions != null && propOptions.ShortKey != default(char))
+                if (propOptions?.ShortKey != null && propOptions.ShortKey.IsValidShortKey())
                 {
-                    switchMaps.Add($"-{propOptions.ShortKey}", $"{_namespace}:{prop.Name}");
+                    var shortKey = $"-{propOptions.ShortKey}";
+                    if (switchMaps.ContainsKey(shortKey))
+                    {
+                        throw new CliAppBuilderException(
+                            $"Cannot assign duplicate short-keys: {shortKey}");
+                    }
+                    switchMaps.Add(shortKey, $"{_namespace}:{prop.Name}");
                 }
 
             }
@@ -158,7 +160,7 @@ namespace CliToolkit
 
         private void InjectPropertiesAndStart(string[] args)
         {
-            var switchMaps = GetSwitchMaps();
+            var switchMaps = GetSwitchMaps(_configurationProperties);
             if (_configurationProperties.Count > 0)
             {
                 var configBuilder = new ConfigurationBuilder();

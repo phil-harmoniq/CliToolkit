@@ -56,23 +56,23 @@ namespace CliToolkit
 
         public CliAppBuilder<TApp> SetName(string name)
         {
-            if (string.IsNullOrEmpty(name)) { throw new CliBuilderException("Custom name cannot be null or empty"); }
+            if (string.IsNullOrEmpty(name)) { throw new CliAppBuilderException("Custom name cannot be null or empty"); }
             _appSettings.Name = name;
             return this;
         }
 
         public CliAppBuilder<TApp> SetVersion(string version)
         {
-            if (string.IsNullOrEmpty(version)) { throw new CliBuilderException("Custom version cannot be null or empty"); }
+            if (string.IsNullOrEmpty(version)) { throw new CliAppBuilderException("Custom version cannot be null or empty"); }
             _appSettings.Version = version;
             return this;
         }
 
         public CliAppBuilder<TApp> SetMenuWidth(int menuWidth)
         {
-            if (menuWidth < _minWidth) { throw new CliBuilderException(
+            if (menuWidth < _minWidth) { throw new CliAppBuilderException(
                 $"Given width {menuWidth} is less than the minimum allowed {_minWidth}"); }
-            if (menuWidth > _maxWidth) { throw new CliBuilderException(
+            if (menuWidth > _maxWidth) { throw new CliAppBuilderException(
                 $"Given width {menuWidth} is greater than the maximum allowed {_maxWidth}"); }
             _appSettings.MenuWidth = menuWidth;
             return this;
