@@ -35,6 +35,8 @@ namespace CliToolkit
             _commandProperties = allProps.GetCommandProperties();
         }
 
+        public abstract void OnExecute(string[] args);
+
         public void PrintHelpMenu()
         {
             Console.WriteLine();
@@ -79,8 +81,6 @@ namespace CliToolkit
                 Console.WriteLine();
             }
         }
-
-        public abstract void OnExecute(string[] args);
 
         internal void Parse(
             CliCommand caller,

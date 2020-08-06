@@ -1,4 +1,5 @@
 ﻿using CliToolkit.Internal;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace CliToolkit
@@ -25,13 +26,15 @@ namespace CliToolkit
             catch (CliAppBuilderException ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Failed to initialized the given command.");
+                Console.WriteLine($"{nameof(CliAppBuilderException)}:");
                 Console.WriteLine(ex.Message);
             }
-            catch
+            catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                throw;
+                var exName = ex.GetType().FullName;
+                Console.WriteLine($"Unhandled exception. {exName}: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
             }
             finally
             {

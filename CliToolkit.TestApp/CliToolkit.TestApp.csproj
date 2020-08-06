@@ -5,12 +5,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(RuntimeIdentifier)' != '' ">
+  <PropertyGroup Condition=" '$(OutputType)' == 'Exe' And '$(Configuration)' == 'Release' ">
+    <Arch>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Arch>
+    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Windows))' ">win-$(Arch.ToLower())</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Linux))' ">linux-$(Arch.ToLower())</RuntimeIdentifier>
+    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(OSX))' ">osx-$(Arch.ToLower())</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>false</SelfContained>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
-    <PublishDir>bin</PublishDir>
+    <PublishDir>$(MSBuildProjectDirectory)\bin</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,9 +35,5 @@
   <ItemGroup>
     <ProjectReference Include="..\CliToolkit\CliToolkit.csproj" />
   </ItemGroup>
-
-  <Target Name="target6" AfterTargets="AfterPublish">
-    <Delete Files="bin\CliToolkit.pdb" />
-  </Target>
 
 </Project>
