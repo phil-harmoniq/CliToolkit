@@ -12,7 +12,7 @@ namespace CliToolkit.TestApp.Commands
 
         public bool BoolValue { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             if (args.Length == 0)
             {

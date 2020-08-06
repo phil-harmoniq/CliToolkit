@@ -80,7 +80,7 @@ namespace CliToolkit
             }
         }
 
-        protected abstract void OnExecute(string[] args);
+        public abstract void OnExecute(string[] args);
 
         internal void Parse(
             CliCommand caller,

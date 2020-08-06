@@ -18,7 +18,7 @@ namespace CliToolkit.TestApp.Commands
             FakeService2 = fakeService2;
         }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             Console.WriteLine($"{nameof(FakeService1)}: {FakeService1}");
             Console.WriteLine($"{nameof(FakeService2)}: {FakeService2}");

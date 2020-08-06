@@ -15,7 +15,7 @@
             Options = options;
         }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
         }
     }

@@ -14,7 +14,7 @@ namespace CliToolkit.TestApp.Commands
         [CliOptions(ShortKey = 'b', Description = "Boolean option")]
         public bool BoolOption { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
         }

@@ -10,7 +10,7 @@ namespace CliToolkit.TestApp.Commands
 
         public bool BoolValue { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             Console.WriteLine($"{nameof(StringValue)}: {StringValue}");
             Console.WriteLine($"{nameof(IntValue)}: {IntValue}");

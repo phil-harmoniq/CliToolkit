@@ -29,7 +29,7 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Test short-key duplication error")]
         public ShortKeyDuplicateCommand ShortKeyDuplicate { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
             throw new CliException("Please provide a sub-command");

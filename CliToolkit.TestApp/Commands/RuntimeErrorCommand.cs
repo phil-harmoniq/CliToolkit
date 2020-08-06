@@ -7,7 +7,7 @@ namespace CliToolkit.TestApp.Commands
         public bool IgnoreError { get; set; }
         public bool Critical { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             if (Critical)
             {

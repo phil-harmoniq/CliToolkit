@@ -10,7 +10,7 @@
         [CliOptions(ShortKey = 's', Description = "String option 2")]
         public string StringOption2 { get; set; }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
         }
