@@ -24,6 +24,7 @@ namespace CliToolkit
             catch (Exception ex)
             {
                 PrintError(ex);
+                throw;
             }
             finally
             {

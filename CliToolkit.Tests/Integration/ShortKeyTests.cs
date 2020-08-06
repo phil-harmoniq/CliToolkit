@@ -1,5 +1,6 @@
 ﻿using CliToolkit.TestApp;
 using CliToolkit.Tests.Integration.Abstract;
+using System;
 using Xunit;
 
 namespace CliToolkit.Tests.Integration
@@ -7,7 +8,7 @@ namespace CliToolkit.Tests.Integration
     public class ShortKeyTests : IntegrationTestBase
     {
         [Fact]
-        public void DefaultActionTest()
+        public void ValidShortKeyTest()
         {
             var stringValue = "String value";
             var intValue = 5;
@@ -24,6 +25,15 @@ namespace CliToolkit.Tests.Integration
             Assert.Equal(stringValue, App.ShortKey.StringOption);
             Assert.Equal(intValue, App.ShortKey.IntOption);
             Assert.True(App.ShortKey.BoolOption);
+        }
+
+        [Fact]
+        public void DuplicateShortKeyTest()
+        {
+            Assert.ThrowsAny<Exception>(() =>
+            {
+                App.Start(new[] { "short-key-duplicate" });
+            });
         }
     }
 }

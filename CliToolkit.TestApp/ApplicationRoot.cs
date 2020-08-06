@@ -26,6 +26,9 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Test short-key configuration")]
         public ShortKeyCommand ShortKey { get; set; }
 
+        [CliOptions(Description = "Test short-key duplication error")]
+        public ShortKeyDuplicateCommand ShortKeyDuplicate { get; set; }
+
         protected override void OnExecute(string[] args)
         {
             PrintHelpMenu();
