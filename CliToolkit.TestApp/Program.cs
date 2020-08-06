@@ -6,7 +6,7 @@ namespace CliToolkit.TestApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
                 .SetName("CliToolkit Test App")
@@ -16,7 +16,7 @@ namespace CliToolkit.TestApp
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 .RegisterServices(RegisterServices)
                 .Start(args);
-            //return app.AppInfo.ExitCode;
+            return app.ExitCode;
         }
 
         private static void RegisterServices(IServiceCollection services, IConfiguration config)

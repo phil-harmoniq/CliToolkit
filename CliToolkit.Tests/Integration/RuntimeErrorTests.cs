@@ -20,6 +20,7 @@ namespace CliToolkit.Tests.Integration
 
             Assert.NotNull(App.Error);
             Assert.True(App.Error.IgnoreError);
+            Assert.True(App.ExitCode == 0);
         }
     }
 }

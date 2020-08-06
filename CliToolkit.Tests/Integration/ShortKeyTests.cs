@@ -1,6 +1,4 @@
-﻿using CliToolkit.TestApp;
-using CliToolkit.Tests.Integration.Abstract;
-using System;
+﻿using CliToolkit.Tests.Integration.Abstract;
 using Xunit;
 
 namespace CliToolkit.Tests.Integration
@@ -30,10 +28,9 @@ namespace CliToolkit.Tests.Integration
         [Fact]
         public void DuplicateShortKeyTest()
         {
-            Assert.ThrowsAny<Exception>(() =>
-            {
-                App.Start(new[] { "short-key-duplicate" });
-            });
+            App.Start(new[] { "short-key-duplicate" });
+
+            Assert.True(App.ExitCode > 0);
         }
     }
 }

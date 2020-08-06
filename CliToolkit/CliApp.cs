@@ -1,5 +1,4 @@
 ﻿using CliToolkit.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace CliToolkit
@@ -25,12 +24,14 @@ namespace CliToolkit
             }
             catch (CliAppBuilderException ex)
             {
+                ExitCode = 1;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"{nameof(CliAppBuilderException)}:");
                 Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
+                ExitCode = 1;
                 Console.ForegroundColor = ConsoleColor.Red;
                 var exName = ex.GetType().FullName;
                 Console.WriteLine($"Unhandled exception. {exName}: {ex.Message}");
