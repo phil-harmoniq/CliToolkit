@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DC72EB03-C91F-422E-9C30-CA8062DA548E}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		CLIToolkit.Logo.png = CLIToolkit.Logo.png
 		Directory.Build.props = Directory.Build.props
 		LICENSE.md = LICENSE.md
 		README.md = README.md
@@ -15,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliToolkit.Tests", "CliToolkit.Tests\CliToolkit.Tests.csproj", "{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit", "CliToolkit\CliToolkit.csproj", "{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliToolkit", "CliToolkit\CliToolkit.csproj", "{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,18 +28,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|x64.Build.0 = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Debug|x86.Build.0 = Debug|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|x64.ActiveCfg = Release|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|x64.Build.0 = Release|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|x86.ActiveCfg = Release|Any CPU
-		{C6D76DAC-036A-4CFA-860E-ED139373DB52}.Release|x86.Build.0 = Release|Any CPU
 		{6BC57AD4-5C79-46EC-AE34-7C1CC647E7BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6BC57AD4-5C79-46EC-AE34-7C1CC647E7BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BC57AD4-5C79-46EC-AE34-7C1CC647E7BB}.Debug|x64.ActiveCfg = Debug|Any CPU
