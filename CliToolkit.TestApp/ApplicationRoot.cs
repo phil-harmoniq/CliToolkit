@@ -3,28 +3,36 @@ using System;
 
 namespace CliToolkit.TestApp
 {
-    [CliDescription("Test application for the CliToolkit library")]
+    [CliOptions(Description = "CliToolkit test application")]
     public class ApplicationRoot : CliApp
     {
-        [CliDescription("Print hello world")]
+        [CliOptions(Description = "Print a hello message to the console")]
         public HelloWorldCommand Hello { get; set; }
 
-        [CliDescription("Simulate a run-time error")]
+        [CliOptions(Description = "Simulate throwing an error")]
         public RuntimeErrorCommand Error { get; set; }
 
-        [CliDescription("Example of common help paramater parsing")]
         public DefaultHelpMenuCommand HelpMenu { get; set; }
 
-        [CliDescription("Show detected configuration variables")]
+        [CliOptions(Description = "Test various configuration options")]
         public ConfigurationValueCommand Config { get; set; }
 
-        [CliDescription("Show alternate ways to set variables")]
+        [CliOptions(Description = "Test configuration through IOptions injection")]
         public AlternateConfigurationCommand Alternate { get; set; }
 
-        protected override void OnExecute(string[] args)
+        [CliOptions(Description = "Test built-in dependency injection")]
+        public DependencyInjectionCommand DependencyInjection { get; set; }
+
+        [CliOptions(Description = "Test short-key configuration")]
+        public ShortKeyCommand ShortKey { get; set; }
+
+        [CliOptions(Description = "Test short-key duplication error")]
+        public ShortKeyDuplicateCommand ShortKeyDuplicate { get; set; }
+
+        public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
-            throw new Exception("");
+            throw new CliException("Please provide a sub-command");
         }
     }
 }

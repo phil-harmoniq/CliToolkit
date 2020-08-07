@@ -1,162 +1,102 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CliToolkit.Internal;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace CliToolkit
 {
     public class CliAppBuilder<TApp> where TApp : CliApp, new()
     {
-        private const int _minimumWidth = 32;
-        private const int _maximumWidth = 128;
-        private const int _defaultWidth = 72;
+        private const int _minWidth = 64;
+        private const int _maxWidth = 256;
 
-        private TApp _app;
-        private ServiceCollection _serviceCollection;
-        private IConfigurationBuilder _configBuilder;
+        private readonly AppSettings _appSettings;
 
         public CliAppBuilder()
         {
-            _app = new TApp();
-            _serviceCollection = new ServiceCollection();
-            _configBuilder = new ConfigurationBuilder();
-            _app.AppInfo.Width = _defaultWidth;
-            _serviceCollection.AddOptions();
+            _appSettings = new AppSettings();
         }
 
         public TApp Build()
         {
-            var assembly = Assembly.GetEntryAssembly();
+            _appSettings.ConfigurationBuilder = new ConfigurationBuilder();
+            _appSettings.ServiceCollection = new ServiceCollection();
 
-            if (string.IsNullOrEmpty(_app.AppInfo.Version))
-            {
-                var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                _app.AppInfo.Version = fvi.ProductVersion;
-            }
+            _appSettings.UserConfiguration?.Invoke(_appSettings.ConfigurationBuilder);
+            _appSettings.ServiceCollection.AddSingleton<TApp>();
+            _appSettings.ServiceCollection.AddOptions();
+            _appSettings.UserServiceRegistration?.Invoke(
+                _appSettings.ServiceCollection,
+                _appSettings.ConfigurationBuilder.Build());
 
-            if (string.IsNullOrEmpty(_app.AppInfo.Name))
-            {
-                _app.AppInfo.Name = assembly.GetName().Name;
-            }
-
-            _app.AppInfo.ConfigurationBuilder = _configBuilder;
-            _app.AppInfo.ServiceCollection = _serviceCollection;
-            _app.AppInfo.ServiceCollection.AddSingleton<CliApp>(_app);
-
-            return _app;
+            var services = _appSettings.ServiceCollection.BuildServiceProvider();
+            var app = services.GetRequiredService<TApp>();
+            app.AddAppSettings(_appSettings);
+            return app;
         }
 
         public TApp Start(string[] args)
         {
-            Build();
-            _app.Start(args);
-            return _app;
+            var app = Build();
+            app.Start(args);
+            return app;
         }
 
         public CliAppBuilder<TApp> Configure(Action<IConfigurationBuilder> configure)
         {
-            _app.AppInfo.UserConfigBuilder = configure;
+            _appSettings.UserConfiguration = configure;
             return this;
         }
 
-        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> register)
+        public CliAppBuilder<TApp> RegisterServices(Action<IServiceCollection, IConfiguration> registerServices)
         {
-            _app.AppInfo.UserServiceRegistration = register;
+            _appSettings.UserServiceRegistration = registerServices;
             return this;
         }
 
         public CliAppBuilder<TApp> SetName(string name)
         {
-            if (string.IsNullOrEmpty(name)) { throw new Exception("SetName() was called with an empty string."); }
-            _app.AppInfo.Name = name;
+            if (string.IsNullOrEmpty(name)) { throw new CliAppBuilderException("Custom name cannot be null or empty"); }
+            _appSettings.Name = name;
             return this;
         }
 
         public CliAppBuilder<TApp> SetVersion(string version)
         {
-            if (string.IsNullOrEmpty(version)) { throw new Exception("SetVersion() was called with an empty string."); }
-            _app.AppInfo.Version = version;
+            if (string.IsNullOrEmpty(version)) { throw new CliAppBuilderException("Custom version cannot be null or empty"); }
+            _appSettings.Version = version;
             return this;
         }
 
-        public CliAppBuilder<TApp> SetWidth(int width)
+        public CliAppBuilder<TApp> SetMenuWidth(int menuWidth)
         {
-            if (width > _maximumWidth)
-            {
-                throw new Exception($"Given width {width} is larger than the maximum width {_maximumWidth}");
-            }
-            if (width < _minimumWidth)
-            {
-                throw new Exception($"Given width {width} is smaller than the minimum width {_minimumWidth}");
-            }
+            if (menuWidth < _minWidth) { throw new CliAppBuilderException(
+                $"Given width {menuWidth} is less than the minimum allowed {_minWidth}"); }
+            if (menuWidth > _maxWidth) { throw new CliAppBuilderException(
+                $"Given width {menuWidth} is greater than the maximum allowed {_maxWidth}"); }
+            _appSettings.MenuWidth = menuWidth;
+            return this;
+        }
 
-            _app.AppInfo.Width = width;
+        public CliAppBuilder<TApp> ShowHeaderAndFooter()
+        {
+            _appSettings.ShowHeaderFooter = true;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> ShowHeaderAndFooter(ConsoleColor titleColor)
+        {
+            _appSettings.TitleColor = titleColor;
+            _appSettings.ShowHeaderFooter = true;
+            return this;
+        }
+
+        public CliAppBuilder<TApp> ShowHeaderAndFooter(Action header, Action footer)
+        {
+            if (header != null) { _appSettings.HeaderAction = header; }
+            if (footer != null) { _appSettings.FooterAction = footer; }
+            _appSettings.ShowHeaderFooter = true;
             return this;
         }
     }
-
-    //public class CliAppBuilder<TApp, TOptions> where TApp : CliApp<TOptions>, new() where TOptions : class
-    //{
-    //    private const int _minimumWidth = 32;
-    //    private const int _maximumWidth = 128;
-
-    //    private TApp _app;
-    //    private ServiceCollection _serviceCollection;
-    //    private IConfigurationBuilder _configBuilder;
-
-    //    public CliAppBuilder()
-    //    {
-    //        _app = new TApp();
-    //        _serviceCollection = new ServiceCollection();
-    //        _configBuilder = new ConfigurationBuilder();
-    //    }
-
-    //    public TApp Build()
-    //    {
-    //        _app.AppInfo.Configuration = _configBuilder.Build();
-    //        return _app;
-    //    }
-
-    //    public TApp Start(string[] args)
-    //    {
-    //        _app.AppInfo.Parse(_serviceCollection, _configBuilder.Build(), args);
-    //        return _app;
-    //    }
-
-    //    public CliAppBuilder<TApp, TOptions> Configure(Action<IConfigurationBuilder> configure)
-    //    {
-    //        configure(_configBuilder);
-    //        return this;
-    //    }
-
-    //    public CliAppBuilder<TApp, TOptions> SetName(string name)
-    //    {
-    //        if (string.IsNullOrEmpty(name)) { throw new Exception("SetName() was called with an empty string."); }
-    //        _app.AppInfo.Name = name;
-    //        return this;
-    //    }
-
-    //    public CliAppBuilder<TApp, TOptions> SetVersion(string version)
-    //    {
-    //        if (string.IsNullOrEmpty(version)) { throw new Exception("SetVersion() was called with an empty string."); }
-    //        _app.AppInfo.Version = version;
-    //        return this;
-    //    }
-
-    //    public CliAppBuilder<TApp, TOptions> SetWidth(int width)
-    //    {
-    //        if (width > _maximumWidth)
-    //        {
-    //            throw new Exception($"Given width {width} is larger than the maximum width {_maximumWidth}");
-    //        }
-    //        if (width < _minimumWidth)
-    //        {
-    //            throw new Exception($"Given width {width} is smaller than the minimum width {_minimumWidth}");
-    //        }
-
-    //        _app.AppInfo.Width = width;
-    //        return this;
-    //    }
-    //}
 }

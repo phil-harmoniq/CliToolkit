@@ -2,11 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace CliToolkit
+namespace CliToolkit.Tests
 {
-    public static class Extensions
+    internal static class TestExtensions
     {
-        public static IServiceCollection AddConfig<TConfig>(
+        internal static IServiceCollection AddConfig<TConfig>(
             this IServiceCollection services, IConfiguration config) where TConfig : class, new()
         {
             services.Configure<TConfig>(config.GetSection(typeof(TConfig).Name));

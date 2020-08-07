@@ -4,7 +4,10 @@
     {
         public AlternateConfigurationOptions Options { get; }
 
+        [CliOptions(Description = "Show the boolean value provided by appsettings.json")]
         public bool BoolFromJson { get; set; }
+
+        [CliOptions(Description = "Show the boolean value provided by the console")]
         public bool BoolFromConsole { get; set; }
 
         public AlternateConfigurationCommand(AlternateConfigurationOptions options)
@@ -12,7 +15,7 @@
             Options = options;
         }
 
-        protected override void OnExecute(string[] args)
+        public override void OnExecute(string[] args)
         {
         }
     }

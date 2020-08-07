@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliToolkit", "CliToolkit\CliToolkit.csproj", "{C6D76DAC-036A-4CFA-860E-ED139373DB52}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliToolkit.TestApp", "CliToolkit.TestApp\CliToolkit.TestApp.csproj", "{6BC57AD4-5C79-46EC-AE34-7C1CC647E7BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DC72EB03-C91F-422E-9C30-CA8062DA548E}"
@@ -15,7 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit.Tests", "CliToolkit.Tests\CliToolkit.Tests.csproj", "{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliToolkit.Tests", "CliToolkit.Tests\CliToolkit.Tests.csproj", "{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CliToolkit", "CliToolkit\CliToolkit.csproj", "{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +63,18 @@ Global
 		{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}.Release|x64.Build.0 = Release|Any CPU
 		{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}.Release|x86.ActiveCfg = Release|Any CPU
 		{7750A1CA-7C48-4E71-A81D-9C87CBD67FC6}.Release|x86.Build.0 = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|x64.Build.0 = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Debug|x86.Build.0 = Debug|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|x64.ActiveCfg = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|x64.Build.0 = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|x86.ActiveCfg = Release|Any CPU
+		{9FCFA2D3-79DF-4E9A-8AFA-EF88B7A67CBC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

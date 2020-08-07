@@ -1,41 +1,52 @@
-﻿using AnsiCodes;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+﻿using CliToolkit.Internal;
 using System;
 
 namespace CliToolkit
 {
     public abstract class CliApp : CliCommand
     {
-        public CliAppInfo AppInfo { get; } = new CliAppInfo();
+        private AppSettings _userSettings;
+
+        public int ExitCode { get; private set; }
 
         public void Start(string[] args)
         {
             try
             {
-                PrintHeader();
-                Parse(this, args);
+                if (_userSettings.ShowHeaderFooter) { _userSettings.HeaderAction.Invoke(); }
+                Parse(this, _userSettings, args);
+            }
+            catch (CliException ex)
+            {
+                ExitCode = ex.ExitCode;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(ex.Message);
+            }
+            catch (CliAppBuilderException ex)
+            {
+                ExitCode = 1;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"{nameof(CliAppBuilderException)}:");
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ExitCode = 1;
+                Console.ForegroundColor = ConsoleColor.Red;
+                var exName = ex.GetType().FullName;
+                Console.WriteLine($"Unhandled exception. {exName}: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
             }
             finally
             {
-                PrintFooter();
+                Console.ResetColor();
+                if (_userSettings.ShowHeaderFooter) { _userSettings.FooterAction.Invoke(); }
             }
         }
 
-        private void PrintHeader()
+        internal void AddAppSettings(AppSettings userSettings)
         {
-            var title = $" {AppInfo.Name} v{AppInfo.Version} ";
-            var padWidth = (AppInfo.Width - title.Length) / 2;
-            var unevenWidth = (AppInfo.Width - title.Length) % 2 != 0;
-            var leftPad = new string('-', padWidth);
-            var rightPad = new string('-', unevenWidth ? padWidth + 1 : padWidth);
-            var output = Environment.NewLine + leftPad + Color.Cyan + Format.Bold + title + Reset.All + rightPad;
-            Console.WriteLine(output);
-        }
-
-        private void PrintFooter()
-        {
-            Console.WriteLine(new string('-', AppInfo.Width) + Environment.NewLine);
+            _userSettings = userSettings;
         }
     }
 }
