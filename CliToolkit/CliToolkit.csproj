@@ -6,6 +6,7 @@
     <IsPackable>true</IsPackable>
     <License>MIT</License>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageIconUrl>https://github.com/phil-harmoniq/CliToolkit/raw/develop/CLIToolkit.Logo.png</PackageIconUrl>
     <Icon>CliToolkit.Logo.png</Icon>
   </PropertyGroup>
 
@@ -13,7 +14,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="3.1.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.6" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.6" />
   </ItemGroup>
 
   <ItemGroup>

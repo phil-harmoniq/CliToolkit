@@ -24,7 +24,6 @@ namespace CliToolkit
 
             _appSettings.UserConfiguration?.Invoke(_appSettings.ConfigurationBuilder);
             _appSettings.ServiceCollection.AddSingleton<TApp>();
-            _appSettings.ServiceCollection.AddOptions();
             _appSettings.UserServiceRegistration?.Invoke(
                 _appSettings.ServiceCollection,
                 _appSettings.ConfigurationBuilder.Build());
