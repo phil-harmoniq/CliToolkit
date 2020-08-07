@@ -8,12 +8,9 @@
   <PropertyGroup>
     <Authors>Phil Hawkins</Authors>
     <Copyright>MIT</Copyright>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Description>Build powerful command-line appls with configuration and DI abstractions out-of-the-box.</Description>
-    <PackageIconUrl></PackageIconUrl>
+    <Description>Convention-based CLI application builder with built-in dependency injection and configuration extensions.</Description>
     <PackageTags>cli;terminal;command;configuration;di</PackageTags>
-    <LicenseUrl>https://raw.githubusercontent.com/phil-harmoniq/CliToolkit/develop/LICENSE.md</LicenseUrl>
-    <PackageProjectUrl>https://phil.harmoniq.dev/CliToolkit</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/phil-harmoniq/CliToolkit</PackageProjectUrl>
     <RepositoryUrl>https://github.com/phil-harmoniq/CliToolkit</RepositoryUrl>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
