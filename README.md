@@ -10,21 +10,26 @@ dotnet add package CliToolkit
 
 ## Usage
 
-Begin by inheriting `CliApp` in your main class and overriding the default `OnExecute()` method. Add flags and properties to this class and use an `AppBuilder` to customize the functionality of your command-line application.
+Begin by inheriting `CliApp` in your main class and overriding the default `OnExecute()` method. Public properties will have their values injected from command-line arguments detected using either `--PascalCase` or `--kebab-case`. Public properties types that derive from `CliCommand` will automatically be registered as a sub-command route.
+
+Under the hood, CliToolkit uses familiar extensions available in ASP.NET Core like dependency injection and configuration. The command-line parser uses [`AddCommandLine()`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1#command-line) and switch maps, so all values can also be supplied via other registered configuration providers. (like environment variables, user secrets, Azure key vault, etc) Dependency injection via constuctor is also available out of the box.
 
 ## Example
 
 ```c#
+using CliToolkit;
+
 public class Program : CliApp
 {
     static int Main(string[] args)
     {
-        var app = new AppBuilder<Program>()
+        var app = new CliAppBuilder<ApplicationRoot>()
             .Start(args);
         return app.ExitCode;
     }
 
-    public Command HelloWorld = new HelloWorldCommand("Say hello world", "hello-world");
+    [CliOptions(Description = "Simulate a long-running process")]
+    public TimerCommand Timer { get; set; }
 
     public override void OnExecute(string[] args)
     {
@@ -32,34 +37,42 @@ public class Program : CliApp
     }
 }
 
-public class HelloWorldCommand : Command
+public class TimerCommand : CliCommand
 {
-    public Flag VerboseFlag = new Flag("Shows header/footer and any additional information.", "verbose", 'v');
-
-    public HelloWorldCommand(string description, string keyword) : base(description, keyword)
-    {
-    }
+    public string Title { get; set; } = "Default";
+    public int Seconds { get; set; } = 5;
+    public bool TimeStamp { get; set; }
 
     public override void OnExecute(string[] args)
     {
-        if (VerboseFlag.IsActive) { PrintHeader(); }
-        Console.WriteLine("Hello, world!");
+        Console.WriteLine($"{Title} timer start");
+
+        for (var i = 1; i <= Seconds; i++)
+        {
+            Thread.Sleep(TimeSpan.FromSeconds(1));
+            Console.WriteLine(i);
+        }
+
+        if (TimeStamp)
+        {
+            Console.WriteLine(DateTime.Now);
+        }
     }
 }
 ```
 
-This is a shortened version of the [`CliToolkit.Example` app](https://github.com/phil-harmoniq/CliToolkit/blob/master/CliToolkit.Example/Program.cs). Go check it out for the full implementation.
+```bash
+$ dotnet run timer --title Custom --seconds 3 --time-stamp true
+Custom timer start
+1
+2
+3
+8/9/2020 8:44:19 PM
+```
 
-## Contributing
-
-PRs, issue reports, and advice are always welcome! It is recommended you use VS Code to work with the CliToolkit source code. The workspace includes build tasks, editor settings, extension recommendations, and launch configurations to aid development in VS Code, but any editor that supports C# will do.
-
-Type Ctrl + Shift + B (or Cmd + Shift + B on Macs) to bring up the build tasks menu:
-
-![Tasks Menu](https://imgur.com/Fah7i33.jpg)
+This is a small portion of the example in [`CliToolkit.TestApp`](CliToolkit.TestApp). Go check it out for the full implementation.
 
 ## Supporting Links
 
 - Check out the [CliToolkit wiki](https://github.com/phil-harmoniq/CliToolkit/wiki) for more usage details
-- Check out some of my other projects on my [personal site](http://phil-hawkins.me/)
-- Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com) is licensed by [CC 3.0 BY](http://creativecommons.org/licenses/by/3.0/)
+- Check out some of my other projects on my [personal site](http://phil.harmoniq.dev/)

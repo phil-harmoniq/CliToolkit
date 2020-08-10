@@ -159,16 +159,15 @@ namespace CliToolkit
                     }
                     switchMaps.Add(shortKey, $"{_namespace}:{prop.Name}");
                 }
-
             }
             return switchMaps;
         }
 
         private void InjectPropertiesAndStart(string[] args)
         {
-            var switchMaps = GetSwitchMaps(_configurationProperties);
             if (_configurationProperties.Count > 0)
             {
+                var switchMaps = GetSwitchMaps(_configurationProperties);
                 var configBuilder = new ConfigurationBuilder();
                 _userSettings.UserConfiguration?.Invoke(configBuilder);
                 configBuilder.AddCommandLine(args, switchMaps);
@@ -182,7 +181,18 @@ namespace CliToolkit
                 foreach (var prop in _configurationProperties)
                 {
                     var value = configSection[prop.Name];
-                    if (!string.IsNullOrEmpty(value))
+                    var explicitBoolAttr = prop.GetCustomAttribute<CliExplicitBoolAttribute>();
+
+                    if (explicitBoolAttr == null && prop.PropertyType == typeof(bool))
+                    {
+                        var keys = switchMaps.Where(sm => sm.Value.Equals($"{_namespace}:{prop.Name}"))
+                            .Select(sm => sm.Key);
+                        if (args.Intersect(keys, StringComparer.OrdinalIgnoreCase).Any())
+                        {
+                            prop.SetValue(this, true);
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(value))
                     {
                         if (prop.PropertyType == typeof(int))
                         {

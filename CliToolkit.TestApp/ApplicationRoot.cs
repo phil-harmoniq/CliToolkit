@@ -29,6 +29,11 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Test short-key duplication error")]
         public ShortKeyDuplicateCommand ShortKeyDuplicate { get; set; }
 
+        [CliOptions(Description = "Simulate a long-running process")]
+        public TimerCommand Timer { get; set; }
+
+        public ExplicitBoolCommand ExplicitBool { get; set; }
+
         public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
