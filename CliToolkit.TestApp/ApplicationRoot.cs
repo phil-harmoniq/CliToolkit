@@ -33,6 +33,7 @@ namespace CliToolkit.TestApp
         public TimerCommand Timer { get; set; }
 
         public ExplicitBoolCommand ExplicitBool { get; set; }
+        public FilteredArgsCommand FilteredArgs { get; set; }
 
         public override void OnExecute(string[] args)
         {

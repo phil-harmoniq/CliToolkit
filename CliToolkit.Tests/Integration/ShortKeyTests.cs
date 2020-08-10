@@ -10,13 +10,12 @@ namespace CliToolkit.Tests.Integration
         {
             var stringValue = "String value";
             var intValue = 5;
-            var boolValue = true;
 
             App.Start(new[] {
                 "short-key",
                 "-s", stringValue,
                 $"-i={intValue}",
-                "-b", boolValue.ToString()
+                "-b"
             });
 
             Assert.NotNull(App.ShortKey);

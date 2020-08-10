@@ -171,11 +171,12 @@ namespace CliToolkit
 
         private void InjectPropertiesAndStart(string[] args)
         {
+            string[] filteredArgs = new string[0];
             if (_configurationProperties.Count > 0)
             {
                 var switchMaps = GetSwitchMaps(_configurationProperties);
                 var implicitSwitchMaps = GetSwitchMaps(_implicitBoolProperties);
-                var filteredArgs = args.Except(implicitSwitchMaps.Keys, StringComparer.OrdinalIgnoreCase).ToArray();
+                filteredArgs = args.Except(implicitSwitchMaps.Keys, StringComparer.OrdinalIgnoreCase).ToArray();
                 var configBuilder = new ConfigurationBuilder();
                 _userSettings.UserConfiguration?.Invoke(configBuilder);
                 var configWithoutCli = configBuilder.Build();
@@ -228,9 +229,21 @@ namespace CliToolkit
                         }
                     }
                 }
+
+                for (var i = 0; i < filteredArgs.Length; i++)
+                {
+                    if (filteredArgs[i] != null && switchMaps.Keys.ContainsOrStartsWith(filteredArgs[i]))
+                    {
+                        if (!filteredArgs[i].Contains("=") && i + 1 < filteredArgs.Length)
+                        {
+                            filteredArgs[i + 1] = null;
+                        }
+                        filteredArgs[i] = null;
+                    }
+                }
             }
 
-            OnExecute(args);
+            OnExecute(filteredArgs.Where(s => !string.IsNullOrEmpty(s)).ToArray());
         }
 
         private PropertyInfo FindMatchingSubCommand(string arg)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -27,6 +28,25 @@ namespace CliToolkit.Internal
         internal static IList<PropertyInfo> GetCommandProperties(this IList<PropertyInfo> props)
         {
             return props.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommand))).ToList();
+        }
+
+        internal static bool ContainsOrStartsWith(this IEnumerable<string> targetValues, string value)
+        {
+            if (targetValues.Contains(value, StringComparer.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            foreach (var targetValue in targetValues)
+            {
+                if (value.StartsWith(targetValue, StringComparison.OrdinalIgnoreCase)
+                    && value.Contains("="))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
