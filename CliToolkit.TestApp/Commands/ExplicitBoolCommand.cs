@@ -4,7 +4,9 @@ namespace CliToolkit.TestApp.Commands
 {
     public class ExplicitBoolCommand : CliCommand
     {
-        public bool IsActive { get; set; }
+        [CliExplicitBool]
+        public bool ExplicitBool { get; set; } = true;
+        public bool ImplicitBool { get; set; }
 
         public override void OnExecute(string[] args)
         {

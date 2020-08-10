@@ -11,10 +11,11 @@ namespace CliToolkit.Tests.Integration
         [Fact]
         public void BoolTest()
         {
-            App.Start(new[] { "explicit-bool", "--is-active" });
+            App.Start(new[] { "explicit-bool", "--implicit-bool", "--explicit-bool", "false" });
 
             Assert.NotNull(App.ExplicitBool);
-            Assert.True(App.ExplicitBool.IsActive);
+            Assert.True(App.ExplicitBool.ImplicitBool);
+            Assert.False(App.ExplicitBool.ExplicitBool);
         }
     }
 }

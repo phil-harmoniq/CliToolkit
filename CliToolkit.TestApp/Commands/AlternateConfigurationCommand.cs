@@ -8,6 +8,7 @@
         public bool BoolFromJson { get; set; }
 
         [CliOptions(Description = "Show the boolean value provided by the console")]
+        [CliExplicitBool]
         public bool BoolFromConsole { get; set; }
 
         public AlternateConfigurationCommand(AlternateConfigurationOptions options)
