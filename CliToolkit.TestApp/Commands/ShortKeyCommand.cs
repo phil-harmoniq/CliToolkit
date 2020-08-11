@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CliToolkit.TestApp.Commands
+﻿namespace CliToolkit.TestApp.Commands
 {
     [CliOptions(Description = "Demonstrate how to setup short-key configuration")]
     public class ShortKeyCommand : CliCommand

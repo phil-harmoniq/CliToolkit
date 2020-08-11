@@ -1,5 +1,4 @@
-﻿using CliToolkit.TestApp;
-using CliToolkit.TestApp.Services;
+﻿using CliToolkit.TestApp.Services;
 using CliToolkit.Tests.Integration.Abstract;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,7 @@ namespace CliToolkit.Tests.Integration
         {
             App.Start(new[] { "dependency-injection" });
 
+            Assert.NotNull(App.DependencyInjection);
             Assert.NotNull(App.DependencyInjection.FakeService1);
             Assert.NotNull(App.DependencyInjection.FakeService2);
             Assert.Null(App.DependencyInjection.NullService1);
