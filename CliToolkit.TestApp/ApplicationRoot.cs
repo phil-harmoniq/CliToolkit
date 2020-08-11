@@ -1,5 +1,4 @@
 ﻿using CliToolkit.TestApp.Commands;
-using System;
 
 namespace CliToolkit.TestApp
 {
@@ -12,6 +11,7 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Simulate throwing an error")]
         public RuntimeErrorCommand Error { get; set; }
 
+        [CliOptions(Description = "Demonstrate how to setup default help menu trugger")]
         public DefaultHelpMenuCommand HelpMenu { get; set; }
 
         [CliOptions(Description = "Test various configuration options")]
@@ -33,12 +33,20 @@ namespace CliToolkit.TestApp
         public TimerCommand Timer { get; set; }
 
         public ExplicitBoolCommand ExplicitBool { get; set; }
-        public FilteredArgsCommand FilteredArgs { get; set; }
+        public ArgFilterCommand ArgFilter { get; set; }
+
+        [CliOptions(Description = "Display help menu")]
+        public bool Help { get; set; }
 
         public override void OnExecute(string[] args)
         {
-            PrintHelpMenu();
-            throw new CliException("Please provide a sub-command");
+            if (Help)
+            {
+                PrintHelpMenu();
+                return;
+            }
+
+            throw new CliException("Please specify a sub-command.");
         }
     }
 }

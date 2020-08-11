@@ -12,8 +12,6 @@ dotnet add package CliToolkit
 
 Begin by inheriting `CliApp` in your main class and overriding the default `OnExecute()` method. Public properties will have their values injected from command-line arguments detected using either `--PascalCase` or `--kebab-case`. Public properties types that derive from `CliCommand` will automatically be registered as a sub-command route.
 
-Under the hood, CliToolkit uses familiar extensions available in ASP.NET Core like dependency injection and configuration. The command-line parser uses [`AddCommandLine()`](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-3.1#command-line) and switch maps, so all values can also be supplied via other registered configuration providers. (like environment variables, user secrets, Azure key vault, etc) Dependency injection via constuctor is also available out of the box.
-
 ## Example
 
 ```c#
@@ -23,7 +21,7 @@ public class Program : CliApp
 {
     static int Main(string[] args)
     {
-        var app = new CliAppBuilder<ApplicationRoot>()
+        var app = new CliAppBuilder<Program>()
             .Start(args);
         return app.ExitCode;
     }
@@ -31,9 +29,18 @@ public class Program : CliApp
     [CliOptions(Description = "Simulate a long-running process")]
     public TimerCommand Timer { get; set; }
 
+    [CliOptions(Description = "Display help menu")]
+    public bool Help { get; set; }
+
     public override void OnExecute(string[] args)
     {
-        PrintHelpMenu();
+        if (Help)
+        {
+            PrintHelpMenu();
+            return;
+        }
+
+        throw new CliException("Please specify a sub-command.");
     }
 }
 

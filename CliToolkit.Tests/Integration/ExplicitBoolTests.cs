@@ -1,7 +1,4 @@
 ﻿using CliToolkit.Tests.Integration.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace CliToolkit.Tests.Integration
