@@ -32,7 +32,7 @@ namespace CliToolkit
             _configurationProperties = allProps.GetConfigProperties();
             _commandProperties = allProps.GetCommandProperties();
             _implicitBoolProperties = _configurationProperties
-                .Where(p => p.PropertyType == typeof(bool) && p.HasAttribute<CliExplicitBoolAttribute>())
+                .Where(p => p.PropertyType == typeof(bool) && !p.HasAttribute<CliExplicitBoolAttribute>())
                 .ToList();
         }
 
@@ -85,39 +85,13 @@ namespace CliToolkit
             return _parent.GetNamespaceList(namespaceList);
         }
 
-        private Dictionary<string, string> GetSwitchMaps(IList<PropertyInfo> configProperties)
-        {
-            var switchMaps = new Dictionary<string, string>();
-            foreach (var prop in configProperties)
-            {
-                switchMaps.Add($"--{prop.Name}", $"{_namespace}:{prop.Name}");
-                var kebabName = TextHelper.KebabConvert(prop.Name);
-                if (!kebabName.Equals(prop.Name, StringComparison.OrdinalIgnoreCase))
-                {
-                    switchMaps.Add($"--{kebabName}", $"{_namespace}:{prop.Name}");
-                }
-                var propOptions = prop.GetCustomAttribute<CliOptionsAttribute>();
-                if (propOptions?.ShortKey != null && propOptions.ShortKey.IsValidShortKey())
-                {
-                    var shortKey = $"-{propOptions.ShortKey}";
-                    if (switchMaps.ContainsKey(shortKey))
-                    {
-                        throw new CliAppBuilderException(
-                            $"Cannot assign duplicate short-keys: {shortKey}");
-                    }
-                    switchMaps.Add(shortKey, $"{_namespace}:{prop.Name}");
-                }
-            }
-            return switchMaps;
-        }
-
         private void InjectPropertiesAndStart(string[] args)
         {
             string[] filteredArgs = new string[0];
             if (_configurationProperties.Count > 0)
             {
-                var switchMaps = GetSwitchMaps(_configurationProperties);
-                var implicitSwitchMaps = GetSwitchMaps(_implicitBoolProperties);
+                var switchMaps = TextHelper.GetSwitchMaps(_configurationProperties, _namespace);
+                var implicitSwitchMaps = TextHelper.GetSwitchMaps(_implicitBoolProperties, _namespace);
                 filteredArgs = args.Except(implicitSwitchMaps.Keys, StringComparer.OrdinalIgnoreCase).ToArray();
                 var configBuilder = new ConfigurationBuilder();
                 _userSettings.UserConfiguration?.Invoke(configBuilder);
@@ -190,12 +164,12 @@ namespace CliToolkit
 
         private PropertyInfo FindMatchingSubCommand(string arg)
         {
-            return _commandProperties.FirstOrDefault(p =>
+            return _commandProperties.FirstOrDefault(prop =>
             {
                 var aliases = new List<string>
                 {
-                    p.Name,
-                    TextHelper.KebabConvert(p.Name)
+                    prop.Name,
+                    prop.Name.KebabConvert()
                 };
                 return aliases.Contains(arg, StringComparer.OrdinalIgnoreCase);
             });
@@ -206,7 +180,7 @@ namespace CliToolkit
             var subType = subCommandProp.PropertyType;
             var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var configProps = subProps.GetConfigProperties();
-            var switchMaps = GetSwitchMaps(configProps);
+            var switchMaps = TextHelper.GetSwitchMaps(configProps, _namespace);
             _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
             var config = _userSettings.ConfigurationBuilder.Build();
             _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);

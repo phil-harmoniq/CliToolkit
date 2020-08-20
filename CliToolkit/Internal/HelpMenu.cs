@@ -29,7 +29,7 @@ namespace CliToolkit.Internal
 
                 foreach (var prop in commandProps)
                 {
-                    var kebab = TextHelper.KebabConvert(prop.Name).ToLower();
+                    var kebab = prop.Name.KebabConvert();
                     Console.WriteLine($"{_optionPad}{kebab}");
                 }
 
@@ -44,7 +44,7 @@ namespace CliToolkit.Internal
                 {
                     var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
 
-                    var output = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
+                    var output = $"--{prop.Name.KebabConvert()}";
                     if (attr != null && attr.ShortKey.IsValidShortKey())
                     {
                         output = $"{output}, -{attr.ShortKey}";
