@@ -9,8 +9,8 @@ namespace CliToolkit.TestApp
         static int Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .SetName("CliToolkit Test App")
-                .SetVersion("1.2.3.4-alpha")
+                //.SetName("CliToolkit Test App")
+                //.SetVersion("1.2.3.4-alpha")
                 .SetMenuWidth(84)
                 .ShowHeaderAndFooter()
                 .Configure(c => c.AddJsonFile("appsettings.json"))

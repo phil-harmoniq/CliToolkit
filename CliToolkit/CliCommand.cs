@@ -10,9 +10,6 @@ namespace CliToolkit
 {
     public abstract class CliCommand
     {
-        private const string _titlePad = "  ";
-        private const string _optionPad = "    ";
-
         private readonly Type _type;
         private readonly bool _isAppRoot;
         private readonly CliOptionsAttribute _optionsAttribute;
@@ -23,7 +20,6 @@ namespace CliToolkit
         private string _namespace;
         private CliCommand _parent;
         private AppSettings _userSettings;
-        private IList<string> _implicitKeywords;
 
         public CliCommand()
         {
@@ -36,57 +32,13 @@ namespace CliToolkit
             _configurationProperties = allProps.GetConfigProperties();
             _commandProperties = allProps.GetCommandProperties();
             _implicitBoolProperties = _configurationProperties
-                .Where(p => p.PropertyType == typeof(bool)
-                    && p.GetCustomAttribute<CliExplicitBoolAttribute>() == null)
+                .Where(p => p.PropertyType == typeof(bool) && p.HasAttribute<CliExplicitBoolAttribute>())
                 .ToList();
         }
 
         public abstract void OnExecute(string[] args);
 
-        public void PrintHelpMenu()
-        {
-            Console.WriteLine();
-
-            var rootAttr = _type.GetCustomAttribute<CliOptionsAttribute>();
-
-            if (rootAttr != null)
-            {
-                Console.WriteLine($"{_titlePad}{rootAttr.Description}{Environment.NewLine}");
-            }
-
-            if (_commandProperties.Count > 0)
-            {
-                Console.WriteLine($"{_titlePad}Commands:");
-
-                foreach (var prop in _commandProperties)
-                {
-                    var kebab = TextHelper.KebabConvert(prop.Name).ToLower();
-                    Console.WriteLine($"{_optionPad}{kebab}");
-                }
-
-                Console.WriteLine();
-            }
-
-            if (_configurationProperties.Count > 0)
-            {
-                Console.WriteLine($"{_titlePad}Options:");
-
-                foreach (var prop in _configurationProperties)
-                {
-                    var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
-
-                    var output = $"--{TextHelper.KebabConvert(prop.Name).ToLower()}";
-                    if (attr != null && attr.ShortKey.IsValidShortKey())
-                    {
-                        output = $"{output}, -{attr.ShortKey}";
-                    }
-
-                    Console.WriteLine($"{_optionPad}{output}");
-                }
-
-                Console.WriteLine();
-            }
-        }
+        public void PrintHelpMenu() => HelpMenu.Print(_type, _commandProperties, _configurationProperties);
 
         internal void Parse(
             CliCommand caller,
@@ -101,24 +53,14 @@ namespace CliToolkit
             if (args.Length > 0)
             {
                 var subCommandProp = FindMatchingSubCommand(args[0]);
-
                 if (subCommandProp != null)
                 {
-                    var subType = subCommandProp.PropertyType;
-                    var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-                    var configProps = subProps.GetConfigProperties();
-                    var switchMaps = GetSwitchMaps(configProps);
-                    _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
-                    var config = _userSettings.ConfigurationBuilder.Build();
-                    _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
-                    _userSettings.UserServiceRegistration?.Invoke(_userSettings.ServiceCollection, config);
-                    var serviceProvider = _userSettings.ServiceCollection.BuildServiceProvider();
-
                     if (!subCommandProp.CanWrite)
                     {
                         throw new Exception($"Property {subCommandProp.Name} must have a public setter for injection.");
                     }
 
+                    var serviceProvider = GetServiceProvider(subCommandProp, args);
                     subCommandProp.SetValue(this, serviceProvider.GetRequiredService(subCommandProp.PropertyType));
                     var val = subCommandProp.GetValue(this, null);
                     var subCommand = (CliCommand)val;
@@ -257,6 +199,19 @@ namespace CliToolkit
                 };
                 return aliases.Contains(arg, StringComparer.OrdinalIgnoreCase);
             });
+        }
+
+        private IServiceProvider GetServiceProvider(PropertyInfo subCommandProp, string[] args)
+        {
+            var subType = subCommandProp.PropertyType;
+            var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var configProps = subProps.GetConfigProperties();
+            var switchMaps = GetSwitchMaps(configProps);
+            _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
+            var config = _userSettings.ConfigurationBuilder.Build();
+            _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
+            _userSettings.UserServiceRegistration?.Invoke(_userSettings.ServiceCollection, config);
+            return _userSettings.ServiceCollection.BuildServiceProvider();
         }
     }
 }
