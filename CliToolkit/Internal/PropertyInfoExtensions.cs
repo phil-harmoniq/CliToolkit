@@ -1,24 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace CliToolkit.Internal
 {
-    internal static class TextHelper
+    internal static class PropertyInfoExtensions
     {
-        // https://stackoverflow.com/a/4489046
-        internal static readonly Regex _regex = new Regex(
-            @"(?<=[A-Z])(?=[A-Z][a-z]) | (?<=[^A-Z])(?=[A-Z]) | (?<=[A-Za-z])(?=[^A-Za-z])",
-            RegexOptions.IgnorePatternWhitespace);
+        internal static bool HasPublicSetter(this PropertyInfo prop)
+        {
+            return prop.CanWrite && prop.GetSetMethod(true).IsPublic;
+        }
 
-        internal static string KebabConvert(this string str) => _regex.Replace(str, "-");
+        internal static IList<PropertyInfo> GetCommandProperties(this IList<PropertyInfo> props)
+        {
+            return props.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommand))).ToList();
+        }
+
+        internal static bool HasAttribute<TAttribute>(this PropertyInfo prop)
+            where TAttribute : Attribute
+        {
+            return prop.GetCustomAttribute<TAttribute>() != null;
+        }
+
+        internal static IList<PropertyInfo> GetConfigProperties(this IList<PropertyInfo> props)
+        {
+            return props.Where(p =>
+                (p.PropertyType == typeof(string)
+                || p.PropertyType == typeof(int)
+                || p.PropertyType == typeof(bool))
+                && p.HasPublicSetter())
+                .ToList();
+        }
 
         internal static Dictionary<string, string> GetSwitchMaps(
-            IList<PropertyInfo> configProperties, string @namespace)
+            this IList<PropertyInfo> properties, string @namespace)
         {
             var switchMaps = new Dictionary<string, string>();
-            foreach (var prop in configProperties)
+            foreach (var prop in properties)
             {
                 switchMaps.Add($"--{prop.Name}", $"{@namespace}:{prop.Name}");
                 var kebabName = prop.Name.KebabConvert();

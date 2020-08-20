@@ -19,7 +19,7 @@ namespace CliToolkit
 
         private string _namespace;
         private CliCommand _parent;
-        private AppSettings _userSettings;
+        private AppSettings _appSettings;
 
         public CliCommand()
         {
@@ -40,13 +40,10 @@ namespace CliToolkit
 
         public void PrintHelpMenu() => HelpMenu.Print(_type, _commandProperties, _configurationProperties);
 
-        internal void Parse(
-            CliCommand caller,
-            AppSettings userSettings,
-            string[] args)
+        internal void Parse(CliCommand caller, AppSettings appSettings, string[] args)
         {
             _parent = caller;
-            _userSettings = userSettings;
+            _appSettings = appSettings;
             var namespaces = GetNamespaceList(new List<string>());
             _namespace = string.Join(":", namespaces);
 
@@ -64,7 +61,7 @@ namespace CliToolkit
                     subCommandProp.SetValue(this, serviceProvider.GetRequiredService(subCommandProp.PropertyType));
                     var val = subCommandProp.GetValue(this, null);
                     var subCommand = (CliCommand)val;
-                    subCommand.Parse(this, userSettings, args.Skip(1).ToArray());
+                    subCommand.Parse(this, appSettings, args.Skip(1).ToArray());
                 }
                 else
                 {
@@ -90,11 +87,11 @@ namespace CliToolkit
             string[] filteredArgs = new string[0];
             if (_configurationProperties.Count > 0)
             {
-                var switchMaps = TextHelper.GetSwitchMaps(_configurationProperties, _namespace);
-                var implicitSwitchMaps = TextHelper.GetSwitchMaps(_implicitBoolProperties, _namespace);
+                var switchMaps = _configurationProperties.GetSwitchMaps(_namespace);
+                var implicitSwitchMaps = _implicitBoolProperties.GetSwitchMaps(_namespace);
                 filteredArgs = args.Except(implicitSwitchMaps.Keys, StringComparer.OrdinalIgnoreCase).ToArray();
                 var configBuilder = new ConfigurationBuilder();
-                _userSettings.UserConfiguration?.Invoke(configBuilder);
+                _appSettings.UserConfiguration?.Invoke(configBuilder);
                 var configWithoutCli = configBuilder.Build();
                 configBuilder.AddCommandLine(filteredArgs, switchMaps);
                 var config = configBuilder.Build();
@@ -108,43 +105,7 @@ namespace CliToolkit
                 if (_isAppRoot) { configSectionWithoutCli = config; }
                 else { configSectionWithoutCli = config.GetSection(commandName); }
 
-                foreach (var prop in _configurationProperties)
-                {
-                    var explicitBoolAttr = prop.GetCustomAttribute<CliExplicitBoolAttribute>();
-                    var value = configSection[prop.Name];
-
-                    if (explicitBoolAttr == null && prop.PropertyType == typeof(bool))
-                    {
-                        value = configSectionWithoutCli[prop.Name] ?? "False";
-                        var keys = switchMaps.Where(sm => sm.Value.Equals($"{_namespace}:{prop.Name}"))
-                            .Select(sm => sm.Key);
-                        if (args.Intersect(keys, StringComparer.OrdinalIgnoreCase).Any())
-                        {
-                            value = "True";
-                        }
-                        if (!string.IsNullOrEmpty(value))
-                        {
-                            prop.SetValue(this, bool.Parse(value));
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(value))
-                    {
-                        if (prop.PropertyType == typeof(int))
-                        {
-                            prop.SetValue(this, int.Parse(value));
-                        }
-                        else if (prop.PropertyType == typeof(bool))
-                        {
-                            bool val;
-                            bool.TryParse(value, out val);
-                            prop.SetValue(this, val);
-                        }
-                        else
-                        {
-                            prop.SetValue(this, value);
-                        }
-                    }
-                }
+                InjectConfigProperties(args, switchMaps, configSection, configSectionWithoutCli);
 
                 for (var i = 0; i < filteredArgs.Length; i++)
                 {
@@ -160,6 +121,50 @@ namespace CliToolkit
             }
 
             OnExecute(filteredArgs.Where(s => !string.IsNullOrEmpty(s)).ToArray());
+        }
+
+        private void InjectConfigProperties(string[] args,
+            Dictionary<string, string> switchMaps,
+            IConfiguration configSection,
+            IConfiguration configSectionWithoutCli)
+        {
+            foreach (var prop in _configurationProperties)
+            {
+                var explicitBoolAttr = prop.GetCustomAttribute<CliExplicitBoolAttribute>();
+                var value = configSection[prop.Name];
+
+                if (explicitBoolAttr == null && prop.PropertyType == typeof(bool))
+                {
+                    value = configSectionWithoutCli[prop.Name] ?? "False";
+                    var keys = switchMaps.Where(sm => sm.Value.Equals($"{_namespace}:{prop.Name}"))
+                        .Select(sm => sm.Key);
+                    if (args.Intersect(keys, StringComparer.OrdinalIgnoreCase).Any())
+                    {
+                        value = "True";
+                    }
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        prop.SetValue(this, bool.Parse(value));
+                    }
+                }
+                else if (!string.IsNullOrEmpty(value))
+                {
+                    if (prop.PropertyType == typeof(int))
+                    {
+                        prop.SetValue(this, int.Parse(value));
+                    }
+                    else if (prop.PropertyType == typeof(bool))
+                    {
+                        bool val;
+                        bool.TryParse(value, out val);
+                        prop.SetValue(this, val);
+                    }
+                    else
+                    {
+                        prop.SetValue(this, value);
+                    }
+                }
+            }
         }
 
         private PropertyInfo FindMatchingSubCommand(string arg)
@@ -180,12 +185,12 @@ namespace CliToolkit
             var subType = subCommandProp.PropertyType;
             var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var configProps = subProps.GetConfigProperties();
-            var switchMaps = TextHelper.GetSwitchMaps(configProps, _namespace);
-            _userSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
-            var config = _userSettings.ConfigurationBuilder.Build();
-            _userSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
-            _userSettings.UserServiceRegistration?.Invoke(_userSettings.ServiceCollection, config);
-            return _userSettings.ServiceCollection.BuildServiceProvider();
+            var switchMaps = configProps.GetSwitchMaps(_namespace);
+            _appSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
+            var config = _appSettings.ConfigurationBuilder.Build();
+            _appSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
+            _appSettings.UserServiceRegistration?.Invoke(_appSettings.ServiceCollection, config);
+            return _appSettings.ServiceCollection.BuildServiceProvider();
         }
     }
 }
