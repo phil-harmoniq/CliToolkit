@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace CliToolkit.Internal
@@ -8,6 +9,7 @@ namespace CliToolkit.Internal
     {
         private const string _titlePad = "  ";
         private const string _optionPad = "    ";
+        private const string _margin = "   ";
 
         internal static void Print(
             Type commandType,
@@ -23,34 +25,60 @@ namespace CliToolkit.Internal
                 Console.WriteLine($"{_titlePad}{rootAttr.Description}{Environment.NewLine}");
             }
 
-            if (commandProps.Count > 0)
+            var commands = new Dictionary<string, string>();
+            var options = new Dictionary<string, string>();
+
+            foreach (var prop in commandProps)
+            {
+                var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
+                var kebab = prop.Name.KebabConvert();
+                commands.Add(kebab, attr?.Description);
+            }
+
+            foreach (var prop in configProps)
+            {
+                var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
+                var output = $"--{prop.Name.KebabConvert()}";
+                if (attr != null && attr.ShortKey.IsValidShortKey())
+                {
+                    output = $"{output}, -{attr.ShortKey}";
+                }
+                options.Add(output, attr?.Description);
+            }
+
+            var longest = new Dictionary<string, string>()
+                .Concat(commands)
+                .Concat(options)
+                .OrderByDescending(kv => kv.Key.Length)
+                .First()
+                .Key.Length + _optionPad.Length;
+            var descriptionPad = longest + _optionPad.Length + _margin.Length;
+
+            if (commands.Count > 0)
             {
                 Console.WriteLine($"{_titlePad}Commands:");
 
-                foreach (var prop in commandProps)
+                foreach (var command in commands)
                 {
-                    var kebab = prop.Name.KebabConvert();
-                    Console.WriteLine($"{_optionPad}{kebab}");
+                    var prefix = $"{_optionPad}{command.Key}";
+                    var marginCount = longest + _margin.Length - prefix.Length;
+                    var margin = new string(' ', marginCount);
+                    Console.WriteLine($"{_optionPad}{command.Key}{margin}{command.Value}");
                 }
 
                 Console.WriteLine();
             }
 
-            if (configProps.Count > 0)
+            if (options.Count > 0)
             {
                 Console.WriteLine($"{_titlePad}Options:");
 
-                foreach (var prop in configProps)
+                foreach (var option in options)
                 {
-                    var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
-
-                    var output = $"--{prop.Name.KebabConvert()}";
-                    if (attr != null && attr.ShortKey.IsValidShortKey())
-                    {
-                        output = $"{output}, -{attr.ShortKey}";
-                    }
-
-                    Console.WriteLine($"{_optionPad}{output}");
+                    var prefix = $"{_optionPad}{option.Key}";
+                    var marginCount = longest + _margin.Length - prefix.Length;
+                    var margin = new string(' ', marginCount);
+                    Console.WriteLine($"{_optionPad}{option.Key}{margin}{option.Value}");
                 }
 
                 Console.WriteLine();

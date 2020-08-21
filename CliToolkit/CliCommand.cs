@@ -65,12 +65,12 @@ namespace CliToolkit
                 }
                 else
                 {
-                    InjectPropertiesAndStart(args);
+                    Start(args);
                 }
             }
             else
             {
-                InjectPropertiesAndStart(args);
+                Start(args);
             }
         }
 
@@ -82,7 +82,7 @@ namespace CliToolkit
             return _parent.GetNamespaceList(namespaceList);
         }
 
-        private void InjectPropertiesAndStart(string[] args)
+        private void Start(string[] args)
         {
             string[] filteredArgs = new string[0];
             if (_configurationProperties.Count > 0)

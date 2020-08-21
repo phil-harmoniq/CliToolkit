@@ -8,14 +8,9 @@
 
         public override void OnExecute(string[] args)
         {
-            if (Help)
-            {
-                PrintHelpMenu();
-                return;
-            }
-
             PrintHelpMenu();
-            throw new CliException("Help menu wasn't explicitly called.");
+            if (Help) { return; }
+            throw new CliException();
         }
     }
 }

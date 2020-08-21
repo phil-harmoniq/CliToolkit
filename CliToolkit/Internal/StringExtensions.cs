@@ -14,7 +14,7 @@ namespace CliToolkit.Internal
 
         internal static string KebabConvert(this string str)
         {
-            return _regex.Replace(str, "-");
+            return _regex.Replace(str, "-").ToLower();
         }
 
         internal static bool IsValidShortKey(this char shortKey)
