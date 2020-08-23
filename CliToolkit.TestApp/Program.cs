@@ -11,8 +11,7 @@ namespace CliToolkit.TestApp
             var app = new CliAppBuilder<ApplicationRoot>()
                 //.SetName("CliToolkit Test App")
                 //.SetVersion("1.2.3.4-alpha")
-                .SetMenuWidth(84)
-                .ShowHeaderAndFooter()
+                .ShowHeaderAndFooter(84)
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 .RegisterServices(RegisterServices)
                 .Start(args);

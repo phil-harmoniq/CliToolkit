@@ -8,6 +8,9 @@ using System.Reflection;
 
 namespace CliToolkit
 {
+    /// <summary>
+    /// The entrypoint for a single command within the command-line application.
+    /// </summary>
     public abstract class CliCommand
     {
         private readonly Type _type;
@@ -21,6 +24,9 @@ namespace CliToolkit
         private CliCommand _parent;
         private AppSettings _appSettings;
 
+        /// <summary>
+        /// The entrypoint for a single command within the command-line application.
+        /// </summary>
         public CliCommand()
         {
             _type = GetType();
@@ -36,8 +42,15 @@ namespace CliToolkit
                 .ToList();
         }
 
+        /// <summary>
+        /// The entrypoint for the current command.
+        /// </summary>
+        /// <param name="args">The filtered arguments left after parsing.</param>
         public abstract void OnExecute(string[] args);
 
+        /// <summary>
+        /// Display a friendly help menu for this commands sub-commands and/or options.
+        /// </summary>
         public void PrintHelpMenu() => HelpMenu.Print(_type, _commandProperties, _configurationProperties);
 
         internal void Parse(CliCommand caller, AppSettings appSettings, string[] args)

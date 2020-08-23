@@ -32,17 +32,21 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Simulate a long-running process")]
         public TimerCommand Timer { get; set; }
 
+        [CliOptions(Description = "Test implicit/explicit boolean implementations")]
         public ExplicitBoolCommand ExplicitBool { get; set; }
+
+        [CliOptions(Description = "Test parsed input argument filter")]
         public ArgFilterCommand ArgFilter { get; set; }
 
-        [CliOptions(Description = "Display help menu")]
+        [CliOptions(ShortKey = 'h', Description = "Display help menu")]
         public bool Help { get; set; }
 
         public override void OnExecute(string[] args)
         {
+            PrintHelpMenu();
+
             if (Help)
             {
-                PrintHelpMenu();
                 return;
             }
 

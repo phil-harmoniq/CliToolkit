@@ -3,12 +3,22 @@ using System;
 
 namespace CliToolkit
 {
+    /// <summary>
+    /// The root of a command-line application.
+    /// </summary>
     public abstract class CliApp : CliCommand
     {
         private AppSettings _userSettings;
 
+        /// <summary>
+        /// The exit code reported upon completion of the command route.
+        /// </summary>
         public int ExitCode { get; private set; }
 
+        /// <summary>
+        /// Starts the application.
+        /// </summary>
+        /// <param name="args">The arguments provided from the console.</param>
         public void Start(string[] args)
         {
             try
