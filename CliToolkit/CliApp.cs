@@ -26,7 +26,7 @@ namespace CliToolkit
                 if (_userSettings.ShowHeaderFooter) { _userSettings.HeaderAction.Invoke(); }
                 Parse(this, _userSettings, args);
             }
-            catch (CliExitException ex)
+            catch (CliException ex)
             {
                 ExitCode = ex.ExitCode;
                 if (!ex.HasDefaultExcepionMessage())
