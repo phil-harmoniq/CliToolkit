@@ -26,24 +26,36 @@ namespace CliToolkit
                 if (_userSettings.ShowHeaderFooter) { _userSettings.HeaderAction.Invoke(); }
                 Parse(this, _userSettings, args);
             }
-            catch (CliException ex)
+            catch (CliExitException ex)
             {
                 ExitCode = ex.ExitCode;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
+                if (!ex.HasDefaultExcepionMessage())
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (ex.ShowStackTrace)
+                    {
+                        var exName = ex.GetType().FullName;
+                        Console.WriteLine($"Unhandled exception. {exName}: {ex.Message}");
+                        Console.WriteLine(ex.StackTrace);
+                    }
+                    else
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
             }
             catch (CliAppBuilderException ex)
             {
                 ExitCode = 1;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"{nameof(CliAppBuilderException)}:");
+                Console.WriteLine(nameof(CliAppBuilderException));
                 Console.WriteLine(ex.Message);
             }
             catch (Exception ex)
             {
                 ExitCode = 1;
-                Console.ForegroundColor = ConsoleColor.Red;
                 var exName = ex.GetType().FullName;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Unhandled exception. {exName}: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }

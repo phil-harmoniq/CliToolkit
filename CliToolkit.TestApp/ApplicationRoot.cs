@@ -44,13 +44,8 @@ namespace CliToolkit.TestApp
         public override void OnExecute(string[] args)
         {
             PrintHelpMenu();
-
-            if (Help)
-            {
-                return;
-            }
-
-            throw new CliException("Please specify a sub-command.");
+            if (Help) { return; }
+            throw new CliException();
         }
     }
 }
