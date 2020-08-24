@@ -11,7 +11,7 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Simulate throwing an error")]
         public RuntimeErrorCommand Error { get; set; }
 
-        [CliOptions(Description = "Demonstrate how to setup default help menu trugger")]
+        [CliOptions(Description = "Demonstrate how to setup default help menu trigger")]
         public DefaultHelpMenuCommand HelpMenu { get; set; }
 
         [CliOptions(Description = "Test various configuration options")]
@@ -32,21 +32,20 @@ namespace CliToolkit.TestApp
         [CliOptions(Description = "Simulate a long-running process")]
         public TimerCommand Timer { get; set; }
 
+        [CliOptions(Description = "Test implicit/explicit boolean implementations")]
         public ExplicitBoolCommand ExplicitBool { get; set; }
+
+        [CliOptions(Description = "Test parsed input argument filter")]
         public ArgFilterCommand ArgFilter { get; set; }
 
-        [CliOptions(Description = "Display help menu")]
+        [CliOptions(ShortKey = 'h', Description = "Display help menu")]
         public bool Help { get; set; }
 
         public override void OnExecute(string[] args)
         {
-            if (Help)
-            {
-                PrintHelpMenu();
-                return;
-            }
-
-            throw new CliException("Please specify a sub-command.");
+            PrintHelpMenu();
+            if (Help) { return; }
+            throw new CliException();
         }
     }
 }
