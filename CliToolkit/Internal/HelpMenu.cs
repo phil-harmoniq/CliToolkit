@@ -13,17 +13,22 @@ namespace CliToolkit.Internal
 
         internal static void Print(
             Type commandType,
-            IList<PropertyInfo> commandProps,
-            IList<PropertyInfo> configProps)
+            IEnumerable<PropertyInfo> commandProps,
+            IEnumerable<PropertyInfo> configProps,
+            CliCommand caller)
         {
             Console.WriteLine();
 
             var rootAttr = commandType.GetCustomAttribute<CliOptionsAttribute>();
 
-            if (rootAttr != null)
+            if (rootAttr != null && !string.IsNullOrEmpty(rootAttr.Description))
             {
                 Console.WriteLine($"{_titlePad}{rootAttr.Description}{Environment.NewLine}");
             }
+
+            var commandTree = string.Join(" ", caller.GetCommandTree());
+            Console.WriteLine($"{_optionPad}{commandTree} [args] [options]");
+            Console.WriteLine();
 
             var commands = new Dictionary<string, string>();
             var options = new Dictionary<string, string>();

@@ -13,33 +13,35 @@ namespace CliToolkit
     /// </summary>
     public abstract class CliCommand
     {
-        private readonly Type _type;
         private readonly bool _isAppRoot;
         private readonly CliOptionsAttribute _optionsAttribute;
-        private readonly IList<PropertyInfo> _configurationProperties;
-        private readonly IList<PropertyInfo> _commandProperties;
-        private readonly IList<PropertyInfo> _implicitBoolProperties;
+        private readonly PropertyInfo[] _implicitBoolProperties;
 
+        private string[] _namespaceList;
         private string _namespace;
-        private CliCommand _parent;
-        private AppSettings _appSettings;
+
+        internal AppSettings AppSettings { get; private set; }
+        internal CliCommand Parent { get; private set; }
+        internal Type Type { get; }
+        internal PropertyInfo[] ConfigurationProperties { get; }
+        internal PropertyInfo[] CommandProperties { get; }
 
         /// <summary>
         /// The entrypoint for a single command within the command-line application.
         /// </summary>
         public CliCommand()
         {
-            _type = GetType();
-            _isAppRoot = _type.IsSubclassOf(typeof(CliApp));
-            _optionsAttribute = _type.GetCustomAttribute<CliOptionsAttribute>();
+            Type = GetType();
+            _isAppRoot = Type.IsSubclassOf(typeof(CliApp));
+            _optionsAttribute = Type.GetCustomAttribute<CliOptionsAttribute>();
 
-            var allProps = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var allProps = Type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            _configurationProperties = allProps.GetConfigProperties();
-            _commandProperties = allProps.GetCommandProperties();
-            _implicitBoolProperties = _configurationProperties
+            ConfigurationProperties = allProps.GetConfigProperties().ToArray();
+            CommandProperties = allProps.GetCommandProperties().ToArray();
+            _implicitBoolProperties = ConfigurationProperties
                 .Where(p => p.PropertyType == typeof(bool) && !p.HasAttribute<CliExplicitBoolAttribute>())
-                .ToList();
+                .ToArray();
         }
 
         /// <summary>
@@ -51,14 +53,14 @@ namespace CliToolkit
         /// <summary>
         /// Display a friendly help menu for this commands sub-commands and/or options.
         /// </summary>
-        public void PrintHelpMenu() => HelpMenu.Print(_type, _commandProperties, _configurationProperties);
+        public void PrintHelpMenu() => HelpMenu.Print(Type, CommandProperties, ConfigurationProperties, this);
 
-        internal void Parse(CliCommand caller, AppSettings appSettings, string[] args)
+        internal void Parse(CliCommand parent, AppSettings appSettings, string[] args)
         {
-            _parent = caller;
-            _appSettings = appSettings;
-            var namespaces = GetNamespaceList(new List<string>());
-            _namespace = string.Join(":", namespaces);
+            Parent = parent;
+            AppSettings = appSettings;
+            _namespaceList = GetNamespaceList(new List<string>()).ToArray();
+            _namespace = string.Join(":", _namespaceList);
 
             if (args.Length > 0)
             {
@@ -90,26 +92,26 @@ namespace CliToolkit
         internal List<string> GetNamespaceList(List<string> namespaceList)
         {
             if (_isAppRoot) { return namespaceList; }
-            if (string.IsNullOrEmpty(_optionsAttribute?.Namespace)) { namespaceList.Insert(0, _type.Name); }
+            if (string.IsNullOrEmpty(_optionsAttribute?.Namespace)) { namespaceList.Insert(0, Type.Name); }
             else { namespaceList.Insert(0, _optionsAttribute.Namespace); }
-            return _parent.GetNamespaceList(namespaceList);
+            return Parent.GetNamespaceList(namespaceList);
         }
 
         private void Start(string[] args)
         {
             string[] filteredArgs = new string[0];
-            if (_configurationProperties.Count > 0)
+            if (ConfigurationProperties.Length > 0)
             {
-                var switchMaps = _configurationProperties.GetSwitchMaps(_namespace);
+                var switchMaps = ConfigurationProperties.GetSwitchMaps(_namespace);
                 var implicitSwitchMaps = _implicitBoolProperties.GetSwitchMaps(_namespace);
                 filteredArgs = args.Except(implicitSwitchMaps.Keys, StringComparer.OrdinalIgnoreCase).ToArray();
                 var configBuilder = new ConfigurationBuilder();
-                _appSettings.UserConfiguration?.Invoke(configBuilder);
+                AppSettings.UserConfiguration?.Invoke(configBuilder);
                 var configWithoutCli = configBuilder.Build();
                 configBuilder.AddCommandLine(filteredArgs, switchMaps);
                 var config = configBuilder.Build();
 
-                var commandName = _optionsAttribute?.Namespace ?? _type.Name;
+                var commandName = _optionsAttribute?.Namespace ?? Type.Name;
                 IConfiguration configSection;
                 if (_isAppRoot) { configSection = config; }
                 else { configSection = config.GetSection(commandName); }
@@ -141,7 +143,7 @@ namespace CliToolkit
             IConfiguration configSection,
             IConfiguration configSectionWithoutCli)
         {
-            foreach (var prop in _configurationProperties)
+            foreach (var prop in ConfigurationProperties)
             {
                 var explicitBoolAttr = prop.GetCustomAttribute<CliExplicitBoolAttribute>();
                 var value = configSection[prop.Name];
@@ -182,7 +184,7 @@ namespace CliToolkit
 
         private PropertyInfo FindMatchingSubCommand(string arg)
         {
-            return _commandProperties.FirstOrDefault(prop =>
+            return CommandProperties.FirstOrDefault(prop =>
             {
                 var aliases = new List<string>
                 {
@@ -199,11 +201,11 @@ namespace CliToolkit
             var subProps = subType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var configProps = subProps.GetConfigProperties();
             var switchMaps = configProps.GetSwitchMaps(_namespace);
-            _appSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
-            var config = _appSettings.ConfigurationBuilder.Build();
-            _appSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
-            _appSettings.UserServiceRegistration?.Invoke(_appSettings.ServiceCollection, config);
-            return _appSettings.ServiceCollection.BuildServiceProvider();
+            AppSettings.ConfigurationBuilder.AddCommandLine(args, switchMaps);
+            var config = AppSettings.ConfigurationBuilder.Build();
+            AppSettings.ServiceCollection.AddSingleton(subCommandProp.PropertyType);
+            AppSettings.UserServiceRegistration?.Invoke(AppSettings.ServiceCollection, config);
+            return AppSettings.ServiceCollection.BuildServiceProvider();
         }
     }
 }
