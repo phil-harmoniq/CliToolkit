@@ -39,10 +39,26 @@ namespace CliToolkit.Internal
             {
                 var attr = prop.GetCustomAttribute<CliOptionsAttribute>();
                 var output = $"--{prop.Name.KebabConvert()}";
+
                 if (attr != null && attr.ShortKey.IsValidShortKey())
                 {
-                    output = $"{output}, -{attr.ShortKey}";
+                    output += $", -{attr.ShortKey}";
                 }
+
+                if (prop.PropertyType == typeof(string))
+                {
+                    output += " <string>";
+                }
+                else if (prop.PropertyType == typeof(int))
+                {
+                    output += " <int>";
+                }
+                else if (prop.PropertyType == typeof(bool)
+                    && prop.HasAttribute<CliExplicitBoolAttribute>())
+                {
+                    output += " <bool>";
+                }
+
                 options.Add(output, attr?.Description);
             }
 
