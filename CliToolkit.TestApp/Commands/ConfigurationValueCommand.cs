@@ -10,8 +10,16 @@ namespace CliToolkit.TestApp.Commands
 
         public bool BoolValue { get; set; }
 
+        public bool Help { get; set; }
+
         public override void OnExecute(string[] args)
         {
+            if (Help)
+            {
+                PrintHelpMenu();
+                return;
+            }
+
             Console.WriteLine($"{nameof(StringValue)}: {StringValue}");
             Console.WriteLine($"{nameof(IntValue)}: {IntValue}");
             Console.WriteLine($"{nameof(BoolValue)}: {BoolValue}");

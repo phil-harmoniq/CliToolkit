@@ -24,7 +24,7 @@ namespace CliToolkit
             try
             {
                 if (_userSettings.ShowHeaderFooter) { _userSettings.HeaderAction.Invoke(); }
-                Parse(this, _userSettings, args);
+                Parse(null, _userSettings, args);
             }
             catch (CliException ex)
             {

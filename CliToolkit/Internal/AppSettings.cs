@@ -8,6 +8,8 @@ namespace CliToolkit.Internal
 {
     internal class AppSettings
     {
+        private string _name;
+
         internal bool ShowHeaderFooter { get; set; }
         internal Action HeaderAction { get; set; }
         internal Action FooterAction { get; set; }
@@ -15,15 +17,27 @@ namespace CliToolkit.Internal
         internal Action<IServiceCollection, IConfiguration> UserServiceRegistration { get; set; }
         internal int MenuWidth { get; set; } = 72;
         internal ConsoleColor TitleColor { get; set; } = ConsoleColor.Cyan;
-        internal string Name { get; set; }
         internal string Version { get; set; }
         internal ConfigurationBuilder ConfigurationBuilder { get; set; }
         internal ServiceCollection ServiceCollection { get; set; }
+
+        internal string Name
+        {
+            get => _name;
+            set
+            {
+                CustomName = true;
+                _name = value;
+            }
+        }
+
+        internal bool CustomName { get; private set; }
 
         internal AppSettings()
         {
             var assembly = Assembly.GetEntryAssembly();
             Name = assembly.GetName().Name;
+            CustomName = false;
             Version = FileVersionInfo.GetVersionInfo(assembly.Location).ProductVersion;
             HeaderAction = HeaderActionDefault;
             FooterAction = FooterActionDefault;

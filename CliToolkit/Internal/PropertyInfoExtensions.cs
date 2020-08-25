@@ -12,9 +12,9 @@ namespace CliToolkit.Internal
             return prop.CanWrite && prop.GetSetMethod(true).IsPublic;
         }
 
-        internal static IList<PropertyInfo> GetCommandProperties(this IList<PropertyInfo> props)
+        internal static IEnumerable<PropertyInfo> GetCommandProperties(this IEnumerable<PropertyInfo> props)
         {
-            return props.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommand))).ToList();
+            return props.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommand)));
         }
 
         internal static bool HasAttribute<TAttribute>(this PropertyInfo prop)
@@ -23,18 +23,17 @@ namespace CliToolkit.Internal
             return prop.GetCustomAttribute<TAttribute>() != null;
         }
 
-        internal static IList<PropertyInfo> GetConfigProperties(this IList<PropertyInfo> props)
+        internal static IEnumerable<PropertyInfo> GetConfigProperties(this IEnumerable<PropertyInfo> props)
         {
             return props.Where(p =>
                 (p.PropertyType == typeof(string)
                 || p.PropertyType == typeof(int)
                 || p.PropertyType == typeof(bool))
-                && p.HasPublicSetter())
-                .ToList();
+                && p.HasPublicSetter());
         }
 
         internal static Dictionary<string, string> GetSwitchMaps(
-            this IList<PropertyInfo> properties, string @namespace)
+            this IEnumerable<PropertyInfo> properties, string @namespace)
         {
             var switchMaps = new Dictionary<string, string>();
             foreach (var prop in properties)
