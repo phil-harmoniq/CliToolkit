@@ -10,10 +10,11 @@
     <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Windows))' ">win-$(Arch.ToLower())</RuntimeIdentifier>
     <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Linux))' ">linux-$(Arch.ToLower())</RuntimeIdentifier>
     <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(OSX))' ">osx-$(Arch.ToLower())</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>false</SelfContained>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>None</DebugType>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <PublishTrimmed Condition=" '$(SelfContained)' == 'true' ">true</PublishTrimmed>
     <PublishDir>$(MSBuildProjectDirectory)\bin\$(RuntimeIdentifier)</PublishDir>
   </PropertyGroup>
 
@@ -28,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AnsiCodes" Version="0.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.7" />
   </ItemGroup>
 
