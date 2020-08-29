@@ -7,7 +7,6 @@
     <License>MIT</License>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIconUrl>https://github.com/phil-harmoniq/CliToolkit/raw/develop/CLIToolkit.Logo.png</PackageIconUrl>
-    <Icon>CliToolkit.Logo.png</Icon>
     <WarningsAsErrors>true</WarningsAsErrors>
   </PropertyGroup>
 
@@ -19,7 +18,6 @@
 
   <ItemGroup>
     <None Include="../LICENSE.md" Pack="true" PackagePath="$(PackageLicenseFile)" />
-    <Content Include="../CliToolkit.Logo.png" Pack="true" />
   </ItemGroup>
 
 </Project>
