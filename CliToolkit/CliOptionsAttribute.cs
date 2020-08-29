@@ -32,5 +32,18 @@ namespace CliToolkit
         /// A custom namespace for the configuration section
         /// </summary>
         public string Namespace { get; set; }
+
+        public CliOptionsAttribute() { }
+
+        public CliOptionsAttribute(string description)
+        {
+            Description = description;
+        }
+
+        public CliOptionsAttribute(string description, char shortKey)
+        {
+            Description = description;
+            ShortKey = shortKey;
+        }
     }
 }

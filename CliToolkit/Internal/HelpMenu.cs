@@ -13,8 +13,8 @@ namespace CliToolkit.Internal
 
         internal static void Print(
             Type commandType,
-            IEnumerable<PropertyInfo> commandProps,
-            IEnumerable<PropertyInfo> configProps,
+            ICollection<PropertyInfo> commandProps,
+            ICollection<PropertyInfo> configProps,
             CliCommand caller)
         {
             Console.WriteLine();
@@ -26,8 +26,12 @@ namespace CliToolkit.Internal
                 Console.WriteLine($"{_titlePad}{rootAttr.Description}{Environment.NewLine}");
             }
 
-            var commandTree = string.Join(" ", caller.GetCommandTree());
-            Console.WriteLine($"{_optionPad}{commandTree} [args] [options]");
+            var commandTree = $"{_optionPad}{string.Join(" ", caller.GetCommandTree())}";
+
+            if (commandProps.Count > 0) { commandTree += " [command]"; }
+            if (configProps.Count > 0) { commandTree += " [options]"; }
+
+            Console.WriteLine(commandTree);
             Console.WriteLine();
 
             var commands = new Dictionary<string, string>();
