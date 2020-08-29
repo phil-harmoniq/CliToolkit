@@ -7,6 +7,7 @@
         [CliOptions(Description = "Show the boolean value provided by appsettings.json")]
         public bool BoolFromJson { get; set; }
 
+        [CliExplicitBool]
         [CliOptions(Description = "Show the boolean value provided by the console")]
         public bool BoolFromConsole { get; set; }
 

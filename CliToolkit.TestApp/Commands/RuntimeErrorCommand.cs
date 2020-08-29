@@ -7,8 +7,16 @@ namespace CliToolkit.TestApp.Commands
         public bool IgnoreError { get; set; }
         public bool Critical { get; set; }
 
+        public bool Help { get; set; }
+
         public override void OnExecute(string[] args)
         {
+            if (Help)
+            {
+                PrintHelpMenu();
+                return;
+            }
+
             if (Critical)
             {
                 throw new Exception($"{nameof(RuntimeErrorCommand)} {nameof(Critical)}");

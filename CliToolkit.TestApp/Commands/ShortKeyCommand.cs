@@ -14,9 +14,20 @@ namespace CliToolkit.TestApp.Commands
         [CliOptions(ShortKey = 'b', Description = "Boolean option")]
         public bool BoolOption { get; set; }
 
+        [CliOptions(ShortKey = 'h', Description = "Show help menu")]
+        public bool Help { get; set; }
+
         public override void OnExecute(string[] args)
         {
-            PrintHelpMenu();
+            if (Help)
+            {
+                PrintHelpMenu();
+                return;
+            }
+
+            Console.WriteLine($"String Option: {StringOption}");
+            Console.WriteLine($"Integer Option: {IntOption}");
+            Console.WriteLine($"Boolean Option: {BoolOption}");
         }
     }
 }

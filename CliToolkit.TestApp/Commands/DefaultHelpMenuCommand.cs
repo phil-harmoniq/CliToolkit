@@ -1,28 +1,20 @@
-﻿using System;
-using System.Linq;
-
-namespace CliToolkit.TestApp.Commands
+﻿namespace CliToolkit.TestApp.Commands
 {
-    [CliOptions(Description = "Show console app help menu")]
+    [CliOptions(Description = "Demonstrate how to setup help menu argument common in most CLI apps")]
     public class DefaultHelpMenuCommand : CliCommand
     {
-        public string StringValue { get; set; }
-
-        public int IntValue { get; set; }
-
-        public bool BoolValue { get; set; }
+        [CliOptions(ShortKey = 'h', Description = "Explicitly call the help menu")]
+        public bool Help { get; set; }
 
         public override void OnExecute(string[] args)
         {
-            if (args.Length == 0)
+            if (Help)
             {
                 PrintHelpMenu();
-                throw new Exception("");
+                return;
             }
-            if (args.Contains("--help"))
-            {
-                PrintHelpMenu();
-            }
+
+            throw new CliException("The help menu wasn't explicitly called");
         }
     }
 }

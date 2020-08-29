@@ -1,6 +1,7 @@
 ﻿using CliToolkit.TestApp.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace CliToolkit.TestApp
 {
@@ -9,10 +10,9 @@ namespace CliToolkit.TestApp
         static int Main(string[] args)
         {
             var app = new CliAppBuilder<ApplicationRoot>()
-                .SetName("CliToolkit Test App")
-                .SetVersion("1.2.3.4-alpha")
-                .SetMenuWidth(84)
-                .ShowHeaderAndFooter()
+                //.SetName("CliToolkit Test App")
+                //.SetVersion("1.2.3.4-alpha")
+                //.ShowHeaderAndFooter(84)
                 .Configure(c => c.AddJsonFile("appsettings.json"))
                 .RegisterServices(RegisterServices)
                 .Start(args);
