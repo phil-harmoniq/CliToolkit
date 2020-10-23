@@ -1,6 +1,13 @@
 <Project>
 
   <PropertyGroup>
+    <MajorVersion>0</MajorVersion>
+    <MinorVersion>5</MinorVersion>
+    <CiBranch>$(BUILD_SOURCEBRANCHNAME)</CiBranch>
+    <CiBuildId>$(BUILD_BUILDID)</CiBuildId>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>Phil Hawkins</Authors>
     <Copyright>MIT</Copyright>
     <Description>Convention-based CLI application builder with built-in dependency injection and configuration extensions.</Description>
@@ -10,15 +17,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <MajorVersion>0</MajorVersion>
-    <MinorVersion>5</MinorVersion>
-    <CiBranch>$(BUILD_SOURCEBRANCHNAME)</CiBranch>
-    <CiBuildId>$(BUILD_BUILDID)</CiBuildId>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="MsBuildTools.Versioning" Version="0.2.118-develop" PrivateAssets="all" />
+    <PackageReference Include="AutoSemVer" Version="1.0.*" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
