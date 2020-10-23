@@ -12,23 +12,27 @@ namespace CliToolkit.Internal
             return prop.CanWrite && prop.GetSetMethod(true).IsPublic;
         }
 
-        internal static IEnumerable<PropertyInfo> GetCommandProperties(this IEnumerable<PropertyInfo> props)
+        internal static IEnumerable<PropertyInfo> GetCommandProperties(
+            this IEnumerable<PropertyInfo> props)
         {
-            return props.Where(p => p.PropertyType.IsSubclassOf(typeof(CliCommand)));
+            return props.Where(p => p.PropertyType
+                .IsSubclassOf(typeof(CliCommand)));
         }
 
-        internal static bool HasAttribute<TAttribute>(this PropertyInfo prop)
+        internal static bool HasAttribute<TAttribute>(
+            this PropertyInfo prop)
             where TAttribute : Attribute
         {
             return prop.GetCustomAttribute<TAttribute>() != null;
         }
 
-        internal static IEnumerable<PropertyInfo> GetConfigProperties(this IEnumerable<PropertyInfo> props)
+        internal static IEnumerable<PropertyInfo> GetConfigProperties(
+            this IEnumerable<PropertyInfo> props)
         {
             return props.Where(p =>
                 (p.PropertyType == typeof(string)
-                || p.PropertyType == typeof(int)
-                || p.PropertyType == typeof(bool))
+                    || p.PropertyType == typeof(int)
+                    || p.PropertyType == typeof(bool))
                 && p.HasPublicSetter());
         }
 

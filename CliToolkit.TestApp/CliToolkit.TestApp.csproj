@@ -3,19 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <Arch>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Arch>
-    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Windows))' ">win-$(Arch.ToLower())</RuntimeIdentifier>
-    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(Linux))' ">linux-$(Arch.ToLower())</RuntimeIdentifier>
-    <RuntimeIdentifier Condition=" '$([MSBuild]::IsOSPlatform(OSX))' ">osx-$(Arch.ToLower())</RuntimeIdentifier>
-    <DebugSymbols>false</DebugSymbols>
-    <DebugType>None</DebugType>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>false</SelfContained>
-    <PublishTrimmed Condition=" '$(SelfContained)' == 'true' ">true</PublishTrimmed>
-    <PublishDir>$(MSBuildProjectDirectory)\bin\$(RuntimeIdentifier)</PublishDir>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,5 +23,9 @@
   <ItemGroup>
     <ProjectReference Include="..\CliToolkit\CliToolkit.csproj" />
   </ItemGroup>
+
+  <!--<Import Project="build\MsBuildTools.PublishSingleFile.targets"/>-->
+
+  <!--<Import Project="..\..\MsBuildTools\MsBuildTools.PublishSingleFile\MsBuildTools.PublishSingleFile.props" />-->
 
 </Project>

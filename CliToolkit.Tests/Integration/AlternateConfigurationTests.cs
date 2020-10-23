@@ -14,6 +14,7 @@ namespace CliToolkit.Tests.Integration
             App.Start(new[] { "alternate", "--bool-from-console=true",
                 "--AlternateConfigurationOptions:StringFromConsole=this-is-console" });
 
+            Assert.NotNull(App.Alternate);
             Assert.True(App.Alternate.BoolFromConsole);
             Assert.True(App.Alternate.BoolFromJson);
             Assert.Equal("this-is-console", App.Alternate.Options.StringFromConsole);

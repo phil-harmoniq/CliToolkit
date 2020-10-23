@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <MajorVersion>0</MajorVersion>
-    <MinorVersion>5</MinorVersion>
+    <MinorVersion>6</MinorVersion>
+    <CiBranch>$(BUILD_SOURCEBRANCHNAME)</CiBranch>
+    <CiBuildId>$(BUILD_BUILDID)</CiBuildId>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -15,10 +17,8 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <VersionPrefix>$(MajorVersion).$(MinorVersion)</VersionPrefix>
-    <VersionPrefix Condition=" '$(BUILD_BUILDID)' != '' ">$(VersionPrefix).$(BUILD_BUILDID)</VersionPrefix>
-    <VersionSuffix Condition=" '$(BUILD_SOURCEBRANCHNAME)' != 'master' ">dev</VersionSuffix>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoSemVer" Version="1.0.*" PrivateAssets="all" />
+  </ItemGroup>
 
 </Project>
