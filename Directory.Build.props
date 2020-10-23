@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <MajorVersion>0</MajorVersion>
-    <MinorVersion>5</MinorVersion>
+    <MinorVersion>6</MinorVersion>
     <CiBranch>$(BUILD_SOURCEBRANCHNAME)</CiBranch>
     <CiBuildId>$(BUILD_BUILDID)</CiBuildId>
   </PropertyGroup>
