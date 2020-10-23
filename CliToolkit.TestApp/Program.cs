@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 
 namespace CliToolkit.TestApp
 {
@@ -18,7 +19,7 @@ namespace CliToolkit.TestApp
                 .Start(args);
             return app.ExitCode;
         }
-
+        
         private static void RegisterServices(IServiceCollection services, IConfiguration config)
         {
             services.AddSingleton<FakeService1>();

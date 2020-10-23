@@ -9,7 +9,7 @@ namespace CliToolkit
     /// Create and customize a new <see cref="CliApp"/> instance.
     /// </summary>
     /// <typeparam name="TApp">The user-defined class deriving from <see cref="CliApp"/>.</typeparam>
-    public class CliAppBuilder<TApp> where TApp : CliApp, new()
+    public class CliAppBuilder<TApp> where TApp : CliApp
     {
         private const int _minWidth = 64;
         private const int _maxWidth = 256;
